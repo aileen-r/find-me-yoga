@@ -1,6 +1,19 @@
-# create-svelte
+# Find Me Yoga
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+**Super WIP**. I like doing yoga, but I haven't been doing enough lately. Trying to find a video across several platforms is hard. Choice paralysis is harder than normal early in the morning (which is when I like to practise).
+
+This is going to be a helper app that picks my yoga video for me. It will ask a couple of questions about how much time I have and what my energy level is, then it will take me straight to a video. No need to scroll through video libraries.
+
+## Planned stack
+
+- Svelte frontend
+- Supabase for storing my library of yoga video links and some metadata.
+- Netlify for hosting
+- Netlify edge functions for interacting with the DB.
+
+Below here is the boilerplate README generated from create-svelte.
+
+----------------
 
 ## Creating a project
 
