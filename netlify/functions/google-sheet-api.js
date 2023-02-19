@@ -25,29 +25,30 @@ async function getAuth() {
 	return auth;
 }
 
-async function getSpreadSheet({ spreadsheetId, auth }) {
-	const res = await sheets.spreadsheets.get({
-		spreadsheetId,
-		auth
-	});
-	return res;
-}
-
-// async function getSpreadSheetValues({ spreadsheetId, auth, sheetName }) {
-// 	const res = await sheets.spreadsheets.values.get({
+// async function getSpreadSheet({ spreadsheetId, auth }) {
+// 	const res = await sheets.spreadsheets.get({
 // 		spreadsheetId,
-// 		auth,
-// 		range: sheetName
+// 		auth
 // 	});
 // 	return res;
 // }
 
+async function getSpreadSheetValues({ spreadsheetId, auth, sheetName }) {
+	const res = await sheets.spreadsheets.values.get({
+		spreadsheetId,
+		auth,
+		range: sheetName
+	});
+	return res;
+}
+
 export const handler = async () => {
 	try {
 		const auth = await getAuth();
-		const response = await getSpreadSheet({
+		const response = await getSpreadSheetValues({
 			spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
-			auth
+			auth,
+			sheetName: 'Videos'
 		});
 		return {
 			statusCode: 200,

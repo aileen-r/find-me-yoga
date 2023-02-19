@@ -3,3 +3,4 @@
 
 [functions.google-sheet-api]
   external_node_modules = ["googleapis"]
+  included_files = ["netlify/functions/googleapi-keys*.json"]
