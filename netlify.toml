@@ -1,0 +1,5 @@
+[functions]
+  node_bundler = "esbuild"
+
+[functions.test]
+  external_node_modules = ["@supabase/supabase-js"]
