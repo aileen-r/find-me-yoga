@@ -1,5 +1,5 @@
 [functions]
   node_bundler = "esbuild"
 
-[functions.test]
-  external_node_modules = ["@supabase/supabase-js"]
+[functions.google-sheet-api]
+  external_node_modules = ["googleapis"]
