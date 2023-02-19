@@ -32,7 +32,7 @@ readFile(filePath, 'utf-8', (err, data) => {
 
 	keys.project_id = process.env.GOOGLE_PROJECT_ID;
 	keys.private_key_id = process.env.GOOGLE_PRIVATE_KEY_ID;
-	keys.private_key = process.env.GOOGLE_PRIVATE_KEY;
+	keys.private_key = process.env.GOOGLE_PRIVATE_KEY.replaceAll("\\n", "\n");
 	keys.client_email = process.env.GOOGLE_CLIENT_EMAIL;
 	keys.client_id = process.env.GOOGLE_CLIENT_ID;
 	keys.client_x509_cert_url = process.env.GOOGLE_CLIENT_CERT_URL;
