@@ -1,0 +1,10 @@
+{
+  "name": "find-me-yoga-functions",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.8.0"
+  }
+}

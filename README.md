@@ -13,6 +13,10 @@ This is going to be a helper app that picks my yoga video for me. It will ask a 
 
 Below here is the boilerplate README generated from create-svelte.
 
+## TODO
+
+- [ ] Add separate functions package.json and get it running in the build step.
+
 ----------------
 
 ## Creating a project
