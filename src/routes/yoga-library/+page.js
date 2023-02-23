@@ -1,13 +1,7 @@
-import { error } from '@sveltejs/kit';
- 
 /** @type {import('./$types').PageLoad} */
-export function load({ params }) {
-  // if (params.slug === 'hello-world') {
-  //   return {
-  //     title: 'Hello world!',
-  //     content: 'Welcome to our blog. Lorem ipsum dolor sit amet...'
-  //   };
-  // }
+export async function load({ fetch }) {
+  const res = await fetch(`/.netlify/functions/videos`);
+  const videos = await res.json();
  
-  // throw error(404, 'Not found');
+  return { videos };
 }
