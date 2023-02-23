@@ -1,2 +1,3 @@
-<h1>Find me yoga</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<h2>This is the landing page</h2>
+
+<p>Here there will be the main flow for finding a yoga video.</p>

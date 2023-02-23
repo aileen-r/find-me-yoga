@@ -1,22 +1,27 @@
-<nav>
-	<ul>
-		<li><a href="/">Home</a></li>
-		<li><a href="/yoga-library">Yoga library</a></li>
-		<li><a href="/about">About</a></li>
-		<li><a href="/.netlify/functions/test" target="_blank">Test API Endpoint</a></li>
-		<li><a href="/.netlify/functions/videos" target="_blank">Videos API Endpoint</a></li>
-	</ul>
-</nav>
+<script>
+	import Nav from './nav.svelte';
+	import Footer from './footer.svelte';
 
-<main><slot></slot></main>
+	import '../reset.css';
+</script>
 
-<footer>
-	A project by <a href="https://aileenrae.co.uk" target="_blank" rel="noopener noreferrer nofollow"
-		>Aileen Rae</a
-	>.
-	<a
-		href="https://github.com/aileen-r/find-me-yoga"
-		target="_blank"
-		rel="noopener noreferrer nofollow">GitHub repository</a
-	>
-</footer>
+<div class="layout">
+	<Nav />
+
+	<main class="main"><slot /></main>
+
+	<Footer />
+</div>
+
+<style lang="scss">
+	.layout {
+		display: flex;
+		flex-direction: column;
+		min-height: 100%;
+
+		.main {
+			flex: 1 1 0;
+			padding: 10px 15px;
+		}
+	}
+</style>
