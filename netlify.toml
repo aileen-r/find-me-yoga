@@ -1,6 +1,6 @@
 [functions]
   node_bundler = "esbuild"
 
-[functions.google-sheet-api]
+[functions.videos]
   external_node_modules = ["googleapis"]
   included_files = ["netlify/functions/googleapi-keys*.json"]
