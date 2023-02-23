@@ -1,12 +1,13 @@
 <script>
-	import Nav from './nav.svelte';
+	import Navbar from './navbar.svelte';
 	import Footer from './footer.svelte';
 
 	import '../reset.css';
+	import '../main.css';
 </script>
 
 <div class="layout">
-	<Nav />
+	<Navbar />
 
 	<main class="main"><slot /></main>
 
@@ -21,7 +22,10 @@
 
 		.main {
 			flex: 1 1 0;
+			margin: 0 auto;
+			max-width: 900px;
 			padding: 10px 15px;
+			width: 100%;
 		}
 	}
 </style>
