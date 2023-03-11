@@ -51,8 +51,7 @@ export const handler = async (event) => {
 		switch (event.httpMethod) {
 			case 'GET':
 				if (segments.length === 0) {
-					console.log(event.queryStringParameters);
-					if (event.queryStringParameters?.maxDuration) {
+					if (event.rawQuery) {
 						// We won't have this for long, I'm just trying something new for this.
 						const videos = await getQueriedList(
 							spreadsheetId,
