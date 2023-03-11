@@ -1,34 +1,51 @@
 <script>
+	import { createEventDispatcher } from 'svelte';
+
+	import questions from '../../data/questions';
 	import Question from './Question.svelte';
 
-  const durationQuestion = {
-		question: 'How much time do you have?',
-		options: ['< 15 mins', '20 mins', '25 mins', '> 30 mins']
-	};
+	const validIds = questions.map((q) => q.id);
 
-  const energyQuestion = {
-    question: 'How much energy do you have?',
-		options: ['Lots', 'Some', 'Barely any']
-  }
+	let queryParamsByQuestionId = new Map();
+	$: ctaDisabled = queryParamsByQuestionId.size === 0;
 
-	const questions = [durationQuestion, energyQuestion];
+	function handleOptionSelected(e) {
+		if (!validIds.includes(e.detail.id)) {
+			console.warn('Invalid question id. Id', e.detail.id);
+			return;
+		}
+		queryParamsByQuestionId = queryParamsByQuestionId.set(e.detail.id, e.detail.param);
+	}
+
+  const dispatch = createEventDispatcher();
+
+	function handleCtaClick() {
+		dispatch('find-me-yoga', {
+			queryString: [...queryParamsByQuestionId.values()].join('&')
+		});
+	}
 </script>
 
 <div class="questions-container">
-  {#each questions as question}
-	<Question questionText={question.question} options={question.options}/>
-  {/each}
-  <button class="cta">Find me yoga</button>
+	{#each questions as question}
+		<Question
+			id={question.id}
+			questionText={question.question}
+			options={question.options}
+			on:option-selected={handleOptionSelected}
+		/>
+	{/each}
+	<button on:click={handleCtaClick} disabled={ctaDisabled} class="cta">Find me yoga</button>
 </div>
 
 <style lang="scss">
-  .questions-container {
-    margin-top: 60px;
-    text-align: center;
-    width: 100%;
+	.questions-container {
+		margin-top: 60px;
+		text-align: center;
+		width: 100%;
 
-    .cta {
-      margin-top: 2em;
-    }
-  }
+		.cta {
+			margin-top: 2em;
+		}
+	}
 </style>
