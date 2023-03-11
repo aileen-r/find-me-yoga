@@ -1,9 +1,10 @@
 // https://www.swyx.io/netlify-google-sheets
 import { google } from 'googleapis';
 
-import getList from "./videos/getList";
-import getEntity from "./videos/getEntity";
-import getQueriedList from "./videos/getQueriedLIst";
+import getList from './videos/getList';
+import getEntity from './videos/getEntity';
+import getQueriedList from './videos/getQueriedList';
+import selectRandomVideo from './videos/selectRandomVideo';
 
 // required env vars
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
@@ -59,9 +60,13 @@ export const handler = async (event) => {
 							'Videos',
 							event.queryStringParameters
 						);
+						let data = videos;
+						if (event.queryStringParameters.random) {
+							data = selectRandomVideo(videos);
+						}
 						return {
 							statusCode: 200,
-							body: JSON.stringify(videos)
+							body: JSON.stringify(data)
 						};
 					}
 					const videos = await getList(sheets, spreadsheetId, auth, 'Videos');
