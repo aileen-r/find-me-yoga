@@ -9,7 +9,7 @@ This is going to be a helper app that picks my yoga video for me. It will ask a 
 ## Planned stack
 
 - Svelte frontend
-- Supabase for storing my library of yoga video links and some metadata.
+- Google Sheets for a "database" (I've never tried this before, and you know what, it seems ideal for a wee project like this where the end user is myself)
 - Netlify for hosting
 - Netlify edge functions for interacting with the DB.
 

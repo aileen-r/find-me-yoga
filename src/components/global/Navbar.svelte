@@ -15,8 +15,7 @@
 		<ul class="nav-list">
 			<li><a href="/yoga-library">Yoga library</a></li>
 			<li><a href="/about">About</a></li>
-			<li><a href="/.netlify/functions/test" target="_blank">Test API Endpoint</a></li>
-			<li><a href="/.netlify/functions/videos" target="_blank">Videos API Endpoint</a></li>
+			<li><a href="/api-playground">API playground</a></li>
 			<!--<li><a href="/about" class:active={$page.url.pathname.includes('/about')}>About me</a></li>
 		<li><a href="/projects" class:active={$page.url.pathname.includes('/projects')}>Projects</a></li>
 		<li><a href="/articles" class:active={$page.url.pathname.includes('/articles')}>Articles</a></li> -->
