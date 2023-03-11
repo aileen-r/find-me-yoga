@@ -7,6 +7,7 @@
 </p>
 
 <ul>
+	<li><a href="/.netlify/functions/videos">/videos</a> (all videos)</li>
 	<li><a href="/.netlify/functions/videos?maxDuration=30">/videos?maxDuration=30</a> (in minutes)</li>
 	<!-- <li><a href="/.netlify/functions/videos?energy=high">/videos?maxDuration=30</a> (high, medium or low)</li> -->
 	<li><a href="/.netlify/functions/test">/test</a> (first Netlify function test)</li>

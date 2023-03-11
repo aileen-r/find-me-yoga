@@ -1,8 +1,10 @@
 // https://www.swyx.io/netlify-google-sheets
 import { google } from 'googleapis';
-/*
- * prerequisites
- */
+
+import getList from "./videos/getList";
+import getEntity from "./videos/getEntity";
+import getQueriedList from "./videos/getQueriedLIst";
+
 // required env vars
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
 	// spreadsheet key is the long id in the sheets URL
@@ -13,7 +15,7 @@ if (!process.env.GOOGLE_SPREADSHEET_ID) {
 	throw new Error('no GOOGLE_SPREADSHEET_ID env var set');
 }
 
-//https://hackernoon.com/how-to-use-google-sheets-api-with-nodejs-cz3v316f
+// https://hackernoon.com/how-to-use-google-sheets-api-with-nodejs-cz3v316f
 const sheets = google.sheets('v4');
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
@@ -24,160 +26,6 @@ function getAuth() {
 	});
 	return auth;
 }
-
-function convertObjectToQueryString(obj) {
-	let queryString = '?';
-	Object.keys(obj).forEach(key => {
-		queryString += `${key}=${encodeURIComponent(obj[key])}&`
-	});
-
-	// crudely slicing off the extra ampersand. could be cleaner but gottagofast
-	return queryString.slice(0, -1)
-}
-
-
-function getValueFromCol(col) {
-	// col.f gives formatted duration, whereas col.v gives a Date.
-	const stringValue = col?.f || col?.v;
-	if (!stringValue) {
-		return null;
-	}
-	const arrayValue = stringValue.split(',');
-	if (arrayValue.length === 1) {
-		return stringValue;
-	}
-	return arrayValue.map(str => str.trim());
-}
-
-function formatQueryResponse(response) {
-	const colLabels = response.table.cols.map(c => c.label);
-	const formattedRows = [];
-	response.table.rows.forEach(row => {
-		const formattedRow = {};
-		row.c.forEach((col, i) => {
-			const key = colLabels[i];
-			const value = getValueFromCol(col);
-			formattedRow[key] = value;
-		})
-		formattedRows.push(formattedRow);
-	})
-	return formattedRows;
-}
-
-async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParameters) {
-	const authHeaders = await auth.getRequestHeaders();
-	const maxDuration = queryStringParameters?.maxDuration;
-	const requestQueryParameters = {
-		gid: sheetName,
-		tq: `Select A,B,C,D,E,F,G,H Where HOUR(C)*60+MINUTE(C)+SECOND(C)/60 <= ${maxDuration}`
-	};
-	const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq${convertObjectToQueryString(requestQueryParameters)}`;
-
-	const options = {
-		method: 'GET',
-		headers: authHeaders
-	};
-	
-	const response = await fetch(url, options);
-	if (response.ok) {
-		const data = await response.text();
-		// fairly horrendous slicing out of actual JSON from returned string
-		const queryResponse = JSON.parse(data.substring(47).slice(0, -2));
-		return formatQueryResponse(queryResponse);
-	} else {
-		// TODO error
-		return null;
-	}
-}
-
-async function getList(spreadsheetId, auth, sheetName) {
-	// TODO: add limit + offset for pagination
-	const res = await sheets.spreadsheets.values.get({
-		spreadsheetId,
-		auth,
-		range: sheetName
-	});
-	const entities = formatRowsIntoEntities(res.data.values);
-	return entities;
-}
-
-async function getEntity(spreadsheetId, auth, sheetName, rowId) {
-	if (rowId === '1') {
-		return {
-			statusCode: 404,
-			body: '404 Not Found'
-		};
-	}
-	// TODO - stitch these into one request
-	const res2 = await sheets.spreadsheets.values.get({
-		spreadsheetId,
-		auth,
-		range: `${sheetName}!A${rowId}:Z${rowId}`
-	});
-
-	if (!res2.data.values || !res2.data.values.length) {
-		return {
-			statusCode: 404,
-			body: '404 Not Found'
-		};
-	}
-
-	const res1 = await sheets.spreadsheets.values.get({
-		spreadsheetId,
-		auth,
-		range: `${sheetName}!A1:Z1`
-	});
-
-	const entity = formatRowIntoEntity(res2.data.values[0], res1.data.values[0]);
-	return {
-		statusCode: 200,
-		body: JSON.stringify(entity)
-	};
-}
-
-function formatRowIntoEntity(row, properties) {
-	const entity = {};
-	properties.forEach((property, i) => (entity[property] = row[i]));
-	return entity;
-}
-
-function formatRowsIntoEntities(rows) {
-	const formattedEntites = [];
-	if (!rows || rows.length < 2) {
-		return [];
-	}
-
-	rows.forEach((row, idx) => {
-		// First row is property name
-		if (idx === 0) {
-			return;
-		}
-		const entity = formatRowIntoEntity(row, rows[0]);
-		formattedEntites.push(entity);
-	});
-	return formattedEntites;
-}
-
-// export const handler = async () => {
-// 	try {
-// 		const auth = await getAuth();
-// 		const response = await getSpreadSheetValues({
-// 			spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
-// 			auth,
-// 			sheetName: 'Videos'
-// 		});
-// 		return {
-// 			statusCode: 200,
-// 			body: JSON.stringify(response.data, null, 2)
-// 		};
-// 	} catch (error) {
-// 		console.log(error.message, error.stack);
-// 		return {
-// 			statusCode: 500,
-// 			body: JSON.stringify(error, null, 2)
-// 		};
-// 	}
-// };
 
 /*
  * ok real work
@@ -217,7 +65,7 @@ export const handler = async (event) => {
 							body: JSON.stringify(videos)
 						};
 					}
-					const videos = await getList(spreadsheetId, auth, 'Videos');
+					const videos = await getList(sheets, spreadsheetId, auth, 'Videos');
 					return {
 						statusCode: 200,
 						body: JSON.stringify(videos)
@@ -225,7 +73,7 @@ export const handler = async (event) => {
 				}
 				if (segments.length === 1) {
 					const rowId = segments[0];
-					return await getEntity(spreadsheetId, auth, 'Videos', rowId);
+					return await getEntity(sheets, spreadsheetId, auth, 'Videos', rowId);
 				} else {
 					throw new Error(
 						'too many segments in GET request - you should only call somehting like /.netlify/functions/google-spreadsheet-fn/123456 not /.netlify/functions/google-spreadsheet-fn/123456/789/101112'
