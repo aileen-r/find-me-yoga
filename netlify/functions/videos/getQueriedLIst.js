@@ -37,6 +37,9 @@ function getWhereConditionFromQueryParameters(params) {
 		// formats HH:mm:ss to time in minutes (decimal)
 		conditions.push(`HOUR(C)*60+MINUTE(C)+SECOND(C)/60 <= ${params.maxDuration}`);
 	}
+	if (params.minDuration) {
+		conditions.push(`HOUR(C)*60+MINUTE(C)+SECOND(C)/60 >= ${params.minDuration}`);
+	}
 	if (params.energy && ENERGY_VALUES.includes(params.energy.toLowerCase())) {
 		conditions.push(`H = '${params.energy}'`);
 	}
@@ -46,7 +49,6 @@ function getWhereConditionFromQueryParameters(params) {
 async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParameters) {
 	const authHeaders = await auth.getRequestHeaders();
 	const whereCondition = getWhereConditionFromQueryParameters(queryStringParameters);
-	console.log(whereCondition);
 	const requestQueryParameters = {
 		gid: sheetName,
 		tq: `Select A,B,C,D,E,F,G,H Where ${whereCondition}`
