@@ -70,7 +70,7 @@ async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParamet
 		const queryResponse = JSON.parse(data.substring(47).slice(0, -2));
 		return formatQueryResponse(queryResponse);
 	} else {
-		// TODO error
+		// TODO error 
 		return null;
 	}
 }
