@@ -14,7 +14,6 @@
     border-radius: 1.2em;
     cursor: pointer;
     height: 150px;
-    margin: 12px;
     position: relative;
     width: 150px;
 

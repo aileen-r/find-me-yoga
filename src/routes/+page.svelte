@@ -9,7 +9,7 @@
 		error: 'error'
 	});
 
-	let activeState = PAGE_STATES.loading;
+	let activeState = PAGE_STATES.questions;
 	let video;
 
 	async function findMeYoga(e) {

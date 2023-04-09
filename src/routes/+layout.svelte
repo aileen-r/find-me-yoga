@@ -9,7 +9,7 @@
 <div class="flex flex-col min-h-full">
 	<Navbar />
 
-	<main class="mt-2 mx-auto flex-1 max-w-4xl px-4 py-2.5 w-full">
+	<main class="mt-6 mx-auto flex-1 max-w-4xl px-4 py-2.5 w-full">
 		<slot />
 	</main>
 

@@ -17,7 +17,7 @@
 		queryParamsByQuestionId = queryParamsByQuestionId.set(e.detail.id, e.detail.param);
 	}
 
-  const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher();
 
 	function handleCtaClick() {
 		dispatch('find-me-yoga', {
@@ -26,7 +26,7 @@
 	}
 </script>
 
-<div class="questions-container">
+<div class="w-full text-center">
 	{#each questions as question}
 		<Question
 			id={question.id}
@@ -35,17 +35,5 @@
 			on:option-selected={handleOptionSelected}
 		/>
 	{/each}
-	<button on:click={handleCtaClick} disabled={ctaDisabled} class="cta">Find me yoga</button>
+	<button on:click={handleCtaClick} disabled={ctaDisabled}>Find me yoga</button>
 </div>
-
-<style lang="scss">
-	.questions-container {
-		margin-top: 60px;
-		text-align: center;
-		width: 100%;
-
-		.cta {
-			margin-top: 2em;
-		}
-	}
-</style>
