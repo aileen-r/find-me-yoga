@@ -1,5 +1,6 @@
 <script>
 	import QuestionsContainer from '../components/landing/QuestionsContainer.svelte';
+	import Loader from '../components/landing/Loader.svelte';
 
 	const PAGE_STATES = Object.freeze({
 		loading: 'loading',
@@ -8,7 +9,7 @@
 		error: 'error'
 	});
 
-	let activeState = PAGE_STATES.questions;
+	let activeState = PAGE_STATES.loading;
 	let video;
 
 	async function findMeYoga(e) {
@@ -29,13 +30,20 @@
 </script>
 
 {#if activeState === PAGE_STATES.loading}
-	<p>Loading...</p>
+	<div class="flex flex-col items-center">
+		<Loader />
+	</div>
 {:else if activeState === PAGE_STATES.questions}
 	<QuestionsContainer on:find-me-yoga={findMeYoga} />
 {:else if activeState === PAGE_STATES.video}
 	<h2>Try one of these videos:</h2>
-	<p>Your video: <a href={video.url} target="_blank" rel="noopener noreferrer nofollow">{video.title}</a> ({video.duration})</p>
+	<p>
+		Your video: <a href={video.url} target="_blank" rel="noopener noreferrer nofollow"
+			>{video.title}</a
+		>
+		({video.duration})
+	</p>
 	<button on:click={backToStart} type="button">Back to start</button>
-	{:else if activeState === PAGE_STATES.error}
+{:else if activeState === PAGE_STATES.error}
 	<h2>Something went wrong</h2>
 {/if}

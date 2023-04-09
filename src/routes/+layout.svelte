@@ -10,7 +10,7 @@
 	<Navbar />
 
 	<main class="mt-2 mx-auto flex-1 max-w-4xl px-4 py-2.5 w-full">
-		<!-- <slot /> -->
+		<slot />
 	</main>
 
 	<Footer />

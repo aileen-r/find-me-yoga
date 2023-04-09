@@ -8,4 +8,11 @@
 			target="_blank">app source code on GitHub</a
 		> to satisfy any curiosity you may have. 😊
 	</p>
+
+	<h3>Resources used</h3>
+	<ul>
+		<li>
+			<a href="https://www.freepik.com/free-vector/black-white-mandala-design_1100964.htm#query=simple%20mandala%20svg&position=35&from_view=search&track=ais">Mandala by kreativkolors</a> on Freepik
+		</li>
+	</ul>
 </article>

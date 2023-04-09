@@ -53,7 +53,8 @@
 	.open .bar3 {
 		transform: rotate(45deg) translate(-6px, -5px);
 	}
-	@media (min-width: 899px) and (min-height: 699px) {
+	/* I cam't get tailwind's screen fn to work so hard-coding lg value here */
+	@media (min-width: 1024px) {
 		.menu-button {
 			display: none;
 		}
