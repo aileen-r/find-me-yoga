@@ -1,3 +1,11 @@
-<h2>About this project</h2>
+<article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">
+	<h2>About this project</h2>
 
-<p>This is very clearly a WIP, and I don't have an "about" written yet. Feel free to check out the <a href="https://github.com/aileen-r/find-me-yoga" rel="noopener noreferrer nofollow" target="_blank">app source code on GitHub</a> to satisfy any curiosity you may have. 😊</p>
+	<p>
+		This is very clearly a WIP, and I don't have an "about" written yet. Feel free to check out the <a
+			href="https://github.com/aileen-r/find-me-yoga"
+			rel="noopener noreferrer nofollow"
+			target="_blank">app source code on GitHub</a
+		> to satisfy any curiosity you may have. 😊
+	</p>
+</article>
