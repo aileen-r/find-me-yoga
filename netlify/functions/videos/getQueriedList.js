@@ -51,7 +51,7 @@ async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParamet
 	const whereCondition = getWhereConditionFromQueryParameters(queryStringParameters);
 	const requestQueryParameters = {
 		gid: sheetName,
-		tq: `Select A,B,C,D,E,F,G,H Where ${whereCondition}`
+		tq: `Select A,B,C,D,E,F,G,H,I Where ${whereCondition}`
 	};
 	const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq${convertObjectToQueryString(
 		requestQueryParameters

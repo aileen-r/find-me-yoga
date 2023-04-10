@@ -19,9 +19,9 @@ This is going to be a helper app that picks my yoga video for me. It will ask a 
 Here are my planned "big ticket" items for this app, if I don't lose interest in developing it over time. The "versions" are pretty meaningless, but they group features by an app area or function.
 
 ### Version 1
-- [ ] The "find me yoga" flow which asks about duration and energy.
+- [*] The "find me yoga" flow which asks about duration and energy.
 - [ ] Subscription (i.e. to a yoga platform) preferences which can be checked and unchecked, which filters what videos can be chosen. Preference can live in local storage for now.
-- [ ] The "find me yoga" flow prioritises videos with incomplete meta data.
+- [*] The "find me yoga" flow prioritises videos with incomplete meta data.
 
 ### Version 2
 - [ ] Yoga library: a readonly view for visitors with metadata, searching, and filters.
