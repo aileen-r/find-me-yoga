@@ -1,5 +1,7 @@
 <script>
 	import QuestionsContainer from '../components/landing/QuestionsContainer.svelte';
+	import VideoResult from '../components/landing/VideoResult.svelte';
+	import Loader from '../components/landing/Loader.svelte';
 
 	const PAGE_STATES = Object.freeze({
 		loading: 'loading',
@@ -9,15 +11,19 @@
 	});
 
 	let activeState = PAGE_STATES.questions;
-	let video;
+	let videoData;
+	let error = 'Something went wrong.';
 
 	async function findMeYoga(e) {
 		activeState = PAGE_STATES.loading;
 		const url = `/.netlify/functions/videos?${e.detail.queryString}&random=true`;
 		const response = await fetch(url);
-		if (response.ok) {
-			video = await response.json();
+		if (response.ok && response.status === 200) {
+			videoData = await response.json();
 			activeState = PAGE_STATES.video;
+		} else if (response.ok && response.status === 204) {
+			error = 'No videos found.';
+			activeState = PAGE_STATES.error;
 		} else {
 			activeState = PAGE_STATES.error;
 		}
@@ -29,13 +35,21 @@
 </script>
 
 {#if activeState === PAGE_STATES.loading}
-	<p>Loading...</p>
+	<div class="flex flex-col items-center">
+		<Loader />
+	</div>
 {:else if activeState === PAGE_STATES.questions}
 	<QuestionsContainer on:find-me-yoga={findMeYoga} />
 {:else if activeState === PAGE_STATES.video}
-	<h2>Try one of these videos:</h2>
-	<p>Your video: <a href={video.url} target="_blank" rel="noopener noreferrer nofollow">{video.title}</a> ({video.duration})</p>
-	<button on:click={backToStart} type="button">Back to start</button>
-	{:else if activeState === PAGE_STATES.error}
-	<h2>Something went wrong</h2>
+	<VideoResult videoData={videoData} on:back-to-start={backToStart} />
+{:else if activeState === PAGE_STATES.error}
+	<article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">
+		<h2>Error</h2>
+		<p>{error}</p>
+		<button
+			class="px-8 pt-1.5 pb-2 bg-zinc-500 text-base text-zinc-50 rounded-full cursor-pointer hover:bg-zinc-600 focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-600 focus-visible:ring-offset-2"
+			on:click={backToStart}
+			type="button">Back to start</button
+		>
+	</article>
 {/if}

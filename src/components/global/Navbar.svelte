@@ -1,21 +1,47 @@
 <script>
 	import BurgerMenuIcon from './BurgerMenuIcon.svelte';
+	import Mandala from '../landing/Mandala.svelte';
 
 	let navOpen = false;
 	const toggleMenu = (event) => {
 		navOpen = event.detail.open;
 	};
+
+	const links = [
+		{
+			link: '/yoga-library',
+			text: 'Yoga library'
+		},
+		{
+			link: '/about',
+			text: 'About'
+		},
+		{
+			link: '/api-playground',
+			text: 'API playground'
+		}
+	];
 </script>
 
-<div class="navbar">
-	<a href="/"><h1>Find me yoga</h1></a>
+<div class="flex flex-wrap justify-between px-4 py-2.5">
+	<a
+		class="underline-hover rounded px-2 pt-1 pb-1.5 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
+		href="/"><h1 class="text-3xl">Find me yoga</h1></a
+	>
+	<!-- fill is zinc-300 -->
+	<Mandala className="absolute left-16 -z-10" width={50} height={50} fill={'#d4d4d8'}/>
 	<BurgerMenuIcon open={navOpen} on:menu={toggleMenu} />
 
-	<nav class="nav {navOpen ? 'open' : 'closed'}" aria-expanded={navOpen}>
-		<ul class="nav-list">
-			<li><a href="/yoga-library">Yoga library</a></li>
-			<li><a href="/about">About</a></li>
-			<li><a href="/api-playground">API playground</a></li>
+	<nav class="basis-full {navOpen ? 'block' : 'hidden'} lg:basis-auto lg:block" aria-expanded={navOpen}>
+		<ul class="lg:flex mt-1">
+			{#each links as { link, text } (link)}
+				<li class="ml-1">
+					<a
+						class="underline-hover rounded px-2 pt-1 pb-1.5 text-zinc-700 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
+						href={link}>{text}</a
+					>
+				</li>
+			{/each}
 			<!--<li><a href="/about" class:active={$page.url.pathname.includes('/about')}>About me</a></li>
 		<li><a href="/projects" class:active={$page.url.pathname.includes('/projects')}>Projects</a></li>
 		<li><a href="/articles" class:active={$page.url.pathname.includes('/articles')}>Articles</a></li> -->
@@ -24,39 +50,7 @@
 </div>
 
 <style lang="scss">
-	.navbar {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		padding: 10px 15px;
-
-		.nav {
-			display: block;	
-
-			@media (max-width: 899px) {
-				flex-basis: 100%;
-
-				&.open {
-					display: block;
-				}
-
-				&.closed {
-					display: none;
-				}
-			}
-
-			@media (min-width: 900px) {
-				.nav-list {
-					display: flex;
-					list-style-type: none;
-					margin-top: 4px;
-					padding: 0;
-
-					li:not(:last-of-type) {
-						margin-right: 10px;
-					}
-				}
-			}
-		}
+	h1 {
+		font-family: 'Caveat', cursive;
 	}
 </style>

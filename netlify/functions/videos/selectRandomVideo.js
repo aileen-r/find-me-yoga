@@ -18,4 +18,25 @@ function selectRandomVideo(videos) {
   return random(videos);
 }
 
+// I have not made any attempt at optimising performance here so yikes probably
+function selectUniqueRandomVideos(videos, count = 1) {
+  if (videos.length === 0) {
+    // this shouldn't even happen
+    return [];
+  }
+  const chosenVideos = [];
+  const chosenVideoUrls = new Set();
+  for (let x = 0; x < count; x++) {
+    const videoSet = videos.filter(v => !chosenVideoUrls.has(v.url));
+    if (videoSet.length === 0) {
+      break;
+    }
+    const video = selectRandomVideo(videoSet);
+    chosenVideos.push(video);
+    chosenVideoUrls.add(video.url);
+  }
+  return chosenVideos;
+}
+
 export default selectRandomVideo;
+export {selectUniqueRandomVideos};

@@ -4,7 +4,7 @@ import { google } from 'googleapis';
 import getList from './videos/getList';
 import getEntity from './videos/getEntity';
 import getQueriedList from './videos/getQueriedList';
-import selectRandomVideo from './videos/selectRandomVideo';
+import {selectUniqueRandomVideos} from './videos/selectRandomVideo';
 
 // required env vars
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
@@ -60,9 +60,19 @@ export const handler = async (event) => {
 							'Videos',
 							event.queryStringParameters
 						);
+						if (videos.length === 0) {
+							return {
+								statusCode: 204
+							}
+						}
 						let data = videos;
 						if (event.queryStringParameters.random) {
-							data = selectRandomVideo(videos);
+							console.log(videos);
+							const chosenVideos = selectUniqueRandomVideos(videos, 4);
+							data = {
+								video: chosenVideos[0],
+								others: chosenVideos.slice(1)
+							};
 						}
 						return {
 							statusCode: 200,
