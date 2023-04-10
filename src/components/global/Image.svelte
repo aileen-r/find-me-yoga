@@ -1,0 +1,22 @@
+<script>
+	export let src;
+	export let alt;
+	export let ratio = '16x9';
+  export let className;
+</script>
+
+<picture class="relative isolate {ratio} {className}">
+	<div class="animate-pulse bg-zinc-200 w-full h-full" />
+	<img class="absolute top-0 left-0 w-full" {src} {alt} />
+</picture>
+
+<style lang="scss">
+	picture {
+		aspect-ratio: 16 / 9;
+
+		// Need to stop this erroring
+		/* &.1x1 {
+      aspect-ratio: 1 / 1;
+    } */
+	}
+</style>

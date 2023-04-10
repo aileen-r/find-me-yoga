@@ -67,7 +67,6 @@ export const handler = async (event) => {
 						}
 						let data = videos;
 						if (event.queryStringParameters.random) {
-							console.log(videos);
 							const chosenVideos = selectUniqueRandomVideos(videos, 4);
 							data = {
 								video: chosenVideos[0],
