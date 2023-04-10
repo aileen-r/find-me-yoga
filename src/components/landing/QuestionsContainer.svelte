@@ -35,5 +35,9 @@
 			on:option-selected={handleOptionSelected}
 		/>
 	{/each}
-	<button on:click={handleCtaClick} disabled={ctaDisabled}>Find me yoga</button>
+	<button
+		class="px-8 pt-1.5 pb-2 bg-zinc-500 text-zinc-50 rounded-full cursor-pointer hover:bg-zinc-600 focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-600 focus-visible:ring-offset-2"
+		on:click={handleCtaClick}
+		disabled={ctaDisabled}>Find me yoga</button
+	>
 </div>

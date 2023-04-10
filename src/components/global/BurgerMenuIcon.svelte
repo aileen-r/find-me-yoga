@@ -43,7 +43,7 @@
 	}
 	/* Rotate first bar */
 	.open .bar1 {
-		transform: rotate(-45deg) translate(-6px, 6px);
+		transform: rotate(-45deg) tranzinc(-6px, 6px);
 	}
 	/* Fade out the second bar */
 	.open .bar2 {
@@ -51,7 +51,7 @@
 	}
 	/* Rotate last bar */
 	.open .bar3 {
-		transform: rotate(45deg) translate(-6px, -5px);
+		transform: rotate(45deg) tranzinc(-6px, -5px);
 	}
 	/* I cam't get tailwind's screen fn to work so hard-coding lg value here */
 	@media (min-width: 1024px) {

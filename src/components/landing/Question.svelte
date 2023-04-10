@@ -24,9 +24,9 @@
 <div class="text-center w-full">
 	<!-- https://svelte-headlessui.goss.io/docs/radio-group -->
 	<RadioGroup class="flex flex-wrap justify-center gap-3 my-10" value={selectedOption} on:change={updateSelection}>
-		<RadioGroupLabel class="grow shrink-0 basis-full">{questionText}</RadioGroupLabel>
+		<RadioGroupLabel class="grow shrink-0 basis-full text-lg">{questionText}</RadioGroupLabel>
 		{#each options as option}
-			<RadioGroupOption value={option.param} let:checked>
+			<RadioGroupOption class="rounded-xl focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-600 focus-visible:ring-offset-2" value={option.param} let:checked>
 				<OptionTile {checked} text={option.displayText} />
 			</RadioGroupOption>
 		{/each}
