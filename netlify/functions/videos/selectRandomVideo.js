@@ -1,7 +1,7 @@
 const NULL_COL_PRIORITY = ['duration', 'url', 'subscription', 'title', 'energy', 'style', 'instructor', 'bodyArea'];
 
 function random(videos) {
-  const randomIdx = Math.round(Math.random() * videos.length);
+  const randomIdx = Math.floor(Math.random() * videos.length);
   if (!videos[randomIdx]) {
     console.warn("Falling back to first video in list");
   }
