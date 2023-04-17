@@ -7,7 +7,7 @@
 
 <picture class="relative isolate {ratio} {className}">
 	<div class="animate-pulse bg-zinc-200 w-full h-full" />
-	<img class="absolute top-0 left-0 w-full" {src} {alt} />
+	<img class="absolute top-0 left-0 w-full h-full object-cover" {src} {alt} />
 </picture>
 
 <style lang="scss">
