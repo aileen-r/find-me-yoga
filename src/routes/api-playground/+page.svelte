@@ -25,6 +25,11 @@
 				>/videos?maxDuration=25&energy=medium</a
 			>
 		</li>
+		<li>
+			<a href="/.netlify/functions/subscriptions"
+				>/subscriptions</a
+			>
+		</li>
 		<li><a href="/.netlify/functions/test">/test</a> (first Netlify function test)</li>
 	</ul>
 </article>

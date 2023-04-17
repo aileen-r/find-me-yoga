@@ -89,7 +89,7 @@ export const handler = async (event) => {
 					return await getEntity(sheets, spreadsheetId, auth, 'Videos', rowId);
 				} else {
 					throw new Error(
-						'too many segments in GET request - you should only call somehting like /.netlify/functions/google-spreadsheet-fn/123456 not /.netlify/functions/google-spreadsheet-fn/123456/789/101112'
+						'too many segments in GET request - you should only call somehting like /.netlify/functions/videos/123456 not /.netlify/functions/videos/123456/789/101112'
 					);
 				}
 			/* POST /.netlify/functions/google-spreadsheet-fn */

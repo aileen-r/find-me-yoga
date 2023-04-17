@@ -5,18 +5,17 @@
   export let className;
 </script>
 
-<picture class="relative isolate {ratio} {className}">
+<picture class="flex items-center justify-center relative isolate ratio-{ratio} {className}">
 	<div class="animate-pulse bg-zinc-200 w-full h-full" />
-	<img class="absolute top-0 left-0 w-full" {src} {alt} />
+	<img class="absolute top-0 left-0 w-full h-full object-cover" {src} {alt} />
 </picture>
 
 <style lang="scss">
 	picture {
 		aspect-ratio: 16 / 9;
 
-		// Need to stop this erroring
-		/* &.1x1 {
+		&.ratio-1x1 {
       aspect-ratio: 1 / 1;
-    } */
+    }
 	}
 </style>

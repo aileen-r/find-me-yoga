@@ -8,6 +8,7 @@ function formatRowsIntoEntities(rows) {
 	}
 
 	rows.forEach((row, idx) => {
+		console.log(row);
 		// First row is property name
 		if (idx === 0) {
 			return;
