@@ -1,36 +1,35 @@
 <script>
+	import { indexPageStateStore, PAGE_STATES } from '../stores.js';
+	
 	import QuestionsContainer from '../components/landing/QuestionsContainer.svelte';
 	import VideoResult from '../components/landing/VideoResult.svelte';
 	import Loader from '../components/landing/Loader.svelte';
 
-	const PAGE_STATES = Object.freeze({
-		loading: 'loading',
-		questions: 'questions',
-		video: 'video',
-		error: 'error'
+	let activeState;
+	indexPageStateStore.subscribe((value) => {
+		activeState = value;
 	});
 
-	let activeState = PAGE_STATES.questions;
 	let videoData;
 	let error = 'Something went wrong.';
 
 	async function findMeYoga(e) {
-		activeState = PAGE_STATES.loading;
+		indexPageStateStore.update(PAGE_STATES.loading);
 		const url = `/.netlify/functions/videos?${e.detail.queryString}&random=true`;
 		const response = await fetch(url);
 		if (response.ok && response.status === 200) {
 			videoData = await response.json();
-			activeState = PAGE_STATES.video;
+			indexPageStateStore.update(PAGE_STATES.video);
 		} else if (response.ok && response.status === 204) {
 			error = 'No videos found.';
-			activeState = PAGE_STATES.error;
+			indexPageStateStore.update(PAGE_STATES.error);
 		} else {
-			activeState = PAGE_STATES.error;
+			indexPageStateStore.update(PAGE_STATES.error);
 		}
 	}
 
 	function backToStart() {
-		activeState = PAGE_STATES.questions;
+		indexPageStateStore.reset();
 	}
 </script>
 
@@ -41,7 +40,7 @@
 {:else if activeState === PAGE_STATES.questions}
 	<QuestionsContainer on:find-me-yoga={findMeYoga} />
 {:else if activeState === PAGE_STATES.video}
-	<VideoResult videoData={videoData} on:back-to-start={backToStart} />
+	<VideoResult {videoData} on:back-to-start={backToStart} />
 {:else if activeState === PAGE_STATES.error}
 	<article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">
 		<h2>Error</h2>
