@@ -12,7 +12,7 @@
 // }
 
 function constructUrlFromVideoId(id) {
-  return `https://www.youtube.com/watch?v=${id}`;
+	return `https://www.youtube.com/watch?v=${id}`;
 }
 
 async function getUploadsByPlaylistId(playlistId, youtube, auth) {
@@ -20,16 +20,15 @@ async function getUploadsByPlaylistId(playlistId, youtube, auth) {
 
 	let totalResults, nextPageToken;
 	const videos = [];
-  const addVideo = video => {
-    videos.push({
-      title: video?.snippet?.title,
-      url: constructUrlFromVideoId(video?.snippet?.resourceId?.videoId),
-      // TODO: duration; requires a videos list call with contentDetails,
-      instructor: 'Yoga with Adriene',
-      subscription: 'YouTube',
-      thumbnail: video?.snippet?.thumbnails?.default?.url
-    })
-  };
+	const addVideo = (video) => {
+		videos.push({
+			title: video?.snippet?.title,
+			url: constructUrlFromVideoId(video?.snippet?.resourceId?.videoId),
+			// TODO: duration; requires a videos list call with contentDetails,
+			instructor: 'Yoga with Adriene',
+			thumbnail: video?.snippet?.thumbnails?.default?.url
+		});
+	};
 
 	const firstResponse = await youtube.playlistItems.list({
 		auth,
@@ -45,23 +44,55 @@ async function getUploadsByPlaylistId(playlistId, youtube, auth) {
 		addVideo(i);
 	});
 
-	while (videos.length < totalResults) {
-		const response = await youtube.playlistItems.list({
-			auth,
-			playlistId,
-			part: ['snippet'],
-			maxResults: 50,
-			pageToken: nextPageToken
-		});
+	// while (videos.length < totalResults) {
+	// 	const response = await youtube.playlistItems.list({
+	// 		auth,
+	// 		playlistId,
+	// 		part: ['snippet'],
+	// 		maxResults: 50,
+	// 		pageToken: nextPageToken
+	// 	});
 
-		nextPageToken = response?.data?.nextPageToken;
+	// 	nextPageToken = response?.data?.nextPageToken;
 
-    response?.data?.items?.forEach((i) => {
-      addVideo(i);
-    });
-	}
+	// 	response?.data?.items?.forEach((i) => {
+	// 		addVideo(i);
+	// 	});
+	// }
 
 	return videos;
 }
 
-export { getUploadsByPlaylistId };
+async function getExistingUrls(sheets, spreadsheetId, auth) {
+	const res = await sheets.spreadsheets.values.get({
+		spreadsheetId,
+		auth,
+    majorDimension: 'COLUMNS',
+		range: 'Videos!B:B'
+	});
+	return new Set(res?.data.values[0]);
+}
+
+function formatVideoIntoRowArray(video) {
+	return [video.title, video.url, '', '', '', video.instructor, 'YouTube', '', video.thumbnail];
+}
+
+async function addImportedVideosToSheet(sheets, spreadsheetId, auth, videos) {
+	const urlSet = await getExistingUrls(sheets, spreadsheetId, auth);
+
+  const videosToAdd = videos.filter(v => !urlSet.has(v.url)).map(formatVideoIntoRowArray);
+
+	const response = await sheets.spreadsheets.values.append({
+		spreadsheetId,
+		auth,
+		range: 'Videos!A:I',
+		valueInputOption: 'USER_ENTERED',
+		requestBody: {
+			majorDimension: 'ROWS',
+			values: videosToAdd
+		}
+	});
+	return response?.data;
+}
+
+export { getUploadsByPlaylistId, addImportedVideosToSheet };

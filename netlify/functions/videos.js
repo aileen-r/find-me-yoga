@@ -5,7 +5,7 @@ import getList from './videos/getList';
 import getEntity from './videos/getEntity';
 import getQueriedList from './videos/getQueriedList';
 import { selectUniqueRandomVideos } from './videos/selectRandomVideo';
-import { getUploadsByPlaylistId } from './videos/youtubeImport';
+import { getUploadsByPlaylistId, addImportedVideosToSheet } from './videos/youtubeImport';
 
 // required env vars
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
@@ -95,9 +95,10 @@ export const handler = async (event) => {
 						// this is channel ID but with 'UU' instead of 'UC' at the start
 						const ADRIENE_UPLOADS_PLAYLIST_ID = 'UUFKE7WVJfvaHW5q283SxchA';
 						const uploads = await getUploadsByPlaylistId(ADRIENE_UPLOADS_PLAYLIST_ID, youtube, auth);
+						const response = await addImportedVideosToSheet(sheets, spreadsheetId, auth, uploads);
 						return {
 							statusCode: 200,
-							body: JSON.stringify(uploads)
+							body: JSON.stringify(response)
 							// 	// body: JSON.stringify(rows[rowId]) // just sends less data over the wire
 						};
 					}
