@@ -25,6 +25,7 @@
 				>/videos?maxDuration=25&energy=medium</a
 			>
 		</li>
+		<li><a href="/.netlify/functions/videos/trigger">/videos/trigger</a> (testing triggering an action that I will later make a cron)</li>
 		<li><a href="/.netlify/functions/test">/test</a> (first Netlify function test)</li>
 	</ul>
 </article>
