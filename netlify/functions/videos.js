@@ -94,8 +94,42 @@ export const handler = async (event) => {
 					if (segments[0] === 'trigger') {
 						// this is channel ID but with 'UU' instead of 'UC' at the start
 						const ADRIENE_UPLOADS_PLAYLIST_ID = 'UUFKE7WVJfvaHW5q283SxchA';
-						const uploads = await getUploadsByPlaylistId(ADRIENE_UPLOADS_PLAYLIST_ID, youtube, auth);
-						const response = await addImportedVideosToSheet(sheets, spreadsheetId, auth, uploads);
+
+						// All this is horrendous, but I want to get it working
+
+						let videoCount;
+						let nextPageToken;
+
+						const res = await getUploadsByPlaylistId(ADRIENE_UPLOADS_PLAYLIST_ID, youtube, auth);
+
+						videoCount = res.videos.length;
+						nextPageToken = res.nextPageToken;
+						const totalResults = res.totalResults;
+
+						const response = await addImportedVideosToSheet(
+							sheets,
+							spreadsheetId,
+							auth,
+							res.videos
+						);
+
+						while (videoCount < totalResults) {
+							const r = await getUploadsByPlaylistId(
+								ADRIENE_UPLOADS_PLAYLIST_ID,
+								youtube,
+								auth,
+								nextPageToken
+							);
+							videoCount = videoCount + r.videos.length;
+							nextPageToken = r.nextPageToken;
+							await addImportedVideosToSheet(
+								sheets,
+								spreadsheetId,
+								auth,
+								r.videos
+							);
+						}
+
 						return {
 							statusCode: 200,
 							body: JSON.stringify(response)
