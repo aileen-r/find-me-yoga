@@ -1,7 +1,6 @@
 <script>
 	import Image from '../../components/global/Image.svelte';
 	/** @type {import('./$types').PageData} */ export let data;
-	console.log(data.subscriptions)
 </script>
 
 <article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">
