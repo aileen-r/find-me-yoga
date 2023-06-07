@@ -1,5 +1,5 @@
 <script>
-	import Alert from "../../components/global/Alert.svelte";
+	import Alert from '../../components/global/Alert.svelte';
 
 	const feedbackTypes = Object.freeze({
 		success: 'success',
@@ -9,21 +9,6 @@
 	let feedbackType;
 	let feedbackMsg = '';
 
-	function getAlertColorFromFeedbackType(feedbackType) {
-		switch (feedbackType) {
-			case feedbackTypes.success:
-				return 'green';
-			case feedbackTypes.warning:
-				return 'amber';
-			case feedbackTypes.error:
-				return 'red';
-			default:
-				return 'zinc';
-		}
-	}
-
-	$: alertColor = getAlertColorFromFeedbackType(feedbackType);
-
 	// form data
 	let username = '';
 	let instructor = '';
@@ -32,24 +17,33 @@
 		e.preventDefault();
 
 		const url = `/.netlify/functions/videos/trigger`;
-		const response = await fetch(url);
-		if (response.ok && response.status === 200) {
-			feedbackType = feedbackTypes.success;
-			feedbackMsg = `${username}'s uploads successfully added to DB`;
-			if (instructor) {
-				feedbackMsg += `with "Instructor" set to ${instructor}`;
-			}
-			console.log(await response.json());
-		} else {
-			const errorText = await response.text();
-			if (errorText.startsWith('TimeoutError')) {
-				feedbackType = feedbackTypes.warning;
-				feedbackMsg = `The process timed out. However, the DB population for ${username}'s uploads was likely still successful.`
+		try {
+			const response = await fetch(url);
+			if (response.ok && response.status === 200) {
+				feedbackType = feedbackTypes.success;
+				feedbackMsg = `${username}'s uploads successfully added to DB`;
+				if (instructor) {
+					feedbackMsg += `with "Instructor" set to ${instructor}`;
+				}
+				console.log(await response.json());
 			} else {
-				feedbackType = feedbackTypes.error;
-				feedbackMsg = 'Something went wrong. Check the developer console.'
+				const errorText = await response.text();
+				if (errorText.startsWith('TimeoutError')) {
+					feedbackType = feedbackTypes.error;
+					feedbackMsg = `The process timed out. However, the DB population for ${username}'s uploads was likely still successful.`;
+				} else {
+					feedbackType = feedbackTypes.error;
+					feedbackMsg = 'Something went wrong. Check the developer console.';
+				}
 			}
 			console.error(errorText);
+		} catch (err) {
+			feedbackType = feedbackTypes.error;
+			feedbackMsg = 'Something went wrong. Check the developer console.';
+			console.error(errorText);
+		} finally {
+			username = '';
+			instructor = '';	
 		}
 		// make api request
 		// update form state with "success" and reload form button
@@ -102,18 +96,19 @@
 		the DB for every upload to the channel. It will not add duplicate rows. If the "instructor"
 		input is populated, this will also be saved.
 	</p>
+	<p>There's no frontend validation on this form.</p>
 
 	{#if feedbackMsg}
-	<Alert type="{feedbackType}">{feedbackMsg}</Alert>
+		<Alert type={feedbackType}>{feedbackMsg}</Alert>
 	{/if}
 
-	<form class="flex flex-col" on:submit={handleSubmit}>
+	<form class="flex flex-col mt-5" on:submit={handleSubmit}>
 		<label for="username">YouTube username</label>
 		<input id="username" type="text" bind:value={username} />
 
 		<label for="instructor">Instructor's name</label>
 		<input id="instructor" type="text" bind:value={instructor} />
 
-		<button type="submit">Scrape</button>
+		<button type="submit" class="mt-5 px-8 pt-1.5 pb-2 bg-zinc-500 text-base text-zinc-50 rounded-full cursor-pointer hover:bg-zinc-600 focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-600 focus-visible:ring-offset-2">Scrape</button>
 	</form>
 </article>
