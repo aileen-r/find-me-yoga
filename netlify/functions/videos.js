@@ -90,17 +90,20 @@ export const handler = async (event) => {
 					};
 				}
 				if (segments.length === 1) {
-					// TODO: move this to PUT eventually
+					// TODO: move this to PUT eventually.
 					if (segments[0] === 'trigger') {
-						// this is channel ID but with 'UU' instead of 'UC' at the start
-						const ADRIENE_UPLOADS_PLAYLIST_ID = 'UUFKE7WVJfvaHW5q283SxchA';
+						const playlistId = event.queryStringParameters.playlistId;
+
+						if (!playlistId) {
+							throw 'No playlistId parameter provided.';
+						}
 
 						// All this is horrendous, but I want to get it working
 
 						let videoCount;
 						let nextPageToken;
 
-						const res = await getUploadsByPlaylistId(ADRIENE_UPLOADS_PLAYLIST_ID, youtube, auth);
+						const res = await getUploadsByPlaylistId(playlistId, youtube, auth);
 
 						videoCount = res.videos.length;
 						nextPageToken = res.nextPageToken;
@@ -115,7 +118,7 @@ export const handler = async (event) => {
 
 						while (videoCount < totalResults) {
 							const r = await getUploadsByPlaylistId(
-								ADRIENE_UPLOADS_PLAYLIST_ID,
+								playlistId,
 								youtube,
 								auth,
 								nextPageToken
@@ -140,7 +143,7 @@ export const handler = async (event) => {
 					return await getEntity(sheets, spreadsheetId, auth, 'Videos', rowId);
 				} else {
 					throw new Error(
-						'too many segments in GET request - you should only call somehting like /.netlify/functions/google-spreadsheet-fn/123456 not /.netlify/functions/google-spreadsheet-fn/123456/789/101112'
+						'too many segments in GET request - unimplemented'
 					);
 				}
 			/* POST /.netlify/functions/google-spreadsheet-fn */

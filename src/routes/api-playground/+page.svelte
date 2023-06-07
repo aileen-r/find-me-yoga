@@ -9,44 +9,45 @@
 	let feedbackType;
 	let feedbackMsg = '';
 
+	let loading = false;
+
 	// form data
-	let username = '';
+	let playlistId = '';
 	let instructor = '';
 
 	async function handleSubmit(e) {
 		e.preventDefault();
+		loading = true;
 
-		const url = `/.netlify/functions/videos/trigger`;
+		const url = `/.netlify/functions/videos/trigger?playlistId=${playlistId}`;
 		try {
 			const response = await fetch(url);
 			if (response.ok && response.status === 200) {
 				feedbackType = feedbackTypes.success;
-				feedbackMsg = `${username}'s uploads successfully added to DB`;
+				feedbackMsg = `Videos from playlist ID ${playlistId} successfully added to DB`;
 				if (instructor) {
 					feedbackMsg += `with "Instructor" set to ${instructor}`;
 				}
-				console.log(await response.json());
 			} else {
 				const errorText = await response.text();
 				if (errorText.startsWith('TimeoutError')) {
-					feedbackType = feedbackTypes.error;
-					feedbackMsg = `The process timed out. However, the DB population for ${username}'s uploads was likely still successful.`;
+					feedbackType = feedbackTypes.warning;
+					feedbackMsg = `The process timed out. However, the DB population for videos from playlist ID ${playlistId} was likely still successful.`;
 				} else {
 					feedbackType = feedbackTypes.error;
 					feedbackMsg = 'Something went wrong. Check the developer console.';
 				}
+				console.error(errorText);
 			}
-			console.error(errorText);
 		} catch (err) {
 			feedbackType = feedbackTypes.error;
 			feedbackMsg = 'Something went wrong. Check the developer console.';
-			console.error(errorText);
+			console.error(err);
 		} finally {
-			username = '';
+			playlistId = '';
 			instructor = '';	
+			loading = false;
 		}
-		// make api request
-		// update form state with "success" and reload form button
 	}
 </script>
 
@@ -96,19 +97,22 @@
 		the DB for every upload to the channel. It will not add duplicate rows. If the "instructor"
 		input is populated, this will also be saved.
 	</p>
-	<p>There's no frontend validation on this form.</p>
+	<p>The playlist ID for a typical playlist can be captured from the playlist URL, e.g. <br />https://www.youtube.com/playlist?list=<strong>PLc0asrzrjtZJk3jlJZXqP8C95h1uQvN7-</strong></p>
+	<p>You can also capture all the uploads from a given user's channel by inspecting the source of a channel page and looking for the canonical URL. It will contain a channel ID of the format <code>UCFKE7WVJfvaHW5q283SxchA</code>. The user's uploads playlist ID starts with <code>UU</code> instead of <code>UC</code>, e.g. <code>UUFKE7WVJfvaHW5q283SxchA</code>.
+	</p>
+	<p>NB: There's no frontend validation on this form.</p>
 
 	{#if feedbackMsg}
 		<Alert type={feedbackType}>{feedbackMsg}</Alert>
 	{/if}
 
 	<form class="flex flex-col mt-5" on:submit={handleSubmit}>
-		<label for="username">YouTube username</label>
-		<input id="username" type="text" bind:value={username} />
+		<label for="playlistId">YouTube playlist ID</label>
+		<input id="playlistId" type="text" bind:value={playlistId} />
 
-		<label for="instructor">Instructor's name</label>
+		<label for="instructor">Instructor's name (optional)</label>
 		<input id="instructor" type="text" bind:value={instructor} />
 
-		<button type="submit" class="mt-5 px-8 pt-1.5 pb-2 bg-zinc-500 text-base text-zinc-50 rounded-full cursor-pointer hover:bg-zinc-600 focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-600 focus-visible:ring-offset-2">Scrape</button>
+		<button type="submit" class="mt-5 px-8 pt-1.5 pb-2 bg-zinc-500 text-base text-zinc-50 rounded-full cursor-pointer hover:bg-zinc-600 focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-600 focus-visible:ring-offset-2">{loading ? 'Loading...' : 'Scrape'}</button>
 	</form>
 </article>

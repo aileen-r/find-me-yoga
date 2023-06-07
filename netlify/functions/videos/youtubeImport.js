@@ -37,6 +37,12 @@ function convertDuration(duration) {
 	const minutes = formatMatchGroup(match[2]);
 	const seconds = formatMatchGroup(match[3]);
 
+	const isShort = hours === '00' && minutes === '02' || minutes === '00' || minutes === '00';
+
+	if (isShort) {
+		return 0; // for filtering later
+	}
+
 	return `${hours}:${minutes}:${seconds}`;
 }
 
@@ -71,12 +77,12 @@ async function getUploadsByPlaylistId(playlistId, youtube, auth, nextPageToken =
 	let videos = res.data.items.map(item => ({
     title: item?.snippet?.title,
     url: constructUrlFromVideoId(item?.snippet?.resourceId?.videoId),
-    instructor: 'Yoga with Adriene',
-    thumbnail: item?.snippet?.thumbnails?.maxres?.url,
+    instructor: '',
+    thumbnail: item?.snippet?.thumbnails?.maxres?.url ?? item?.snippet?.thumbnails?.standard?.url ?? item?.snippet?.thumbnails?.high?.url,
     id: item?.snippet?.resourceId?.videoId
   }))
 
-  videos = await getDurationForVideos(youtube, auth, videos)
+  videos = (await getDurationForVideos(youtube, auth, videos)).filter(video => video.duration !== 0);
 
 	return {videos, totalResults: res.data.pageInfo.totalResults, nextPageToken: res.data.nextPageToken};
 }
@@ -99,7 +105,6 @@ async function addImportedVideosToSheet(sheets, spreadsheetId, auth, videos) {
 	const urlSet = await getExistingUrls(sheets, spreadsheetId, auth);
 
 	const videosToAdd = videos.filter((v) => !urlSet.has(v.url)).map(v => formatVideoIntoRowArray(v));
-  // console.log(videosToAdd);
 
 	const response = await sheets.spreadsheets.values.append({
 		spreadsheetId,
