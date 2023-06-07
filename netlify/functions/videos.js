@@ -4,7 +4,8 @@ import { google } from 'googleapis';
 import getList from './videos/getList';
 import getEntity from './videos/getEntity';
 import getQueriedList from './videos/getQueriedList';
-import {selectUniqueRandomVideos} from './videos/selectRandomVideo';
+import { selectUniqueRandomVideos } from './videos/selectRandomVideo';
+import { getUploadsByPlaylistId, addImportedVideosToSheet } from './videos/youtubeImport';
 
 // required env vars
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
@@ -18,7 +19,11 @@ if (!process.env.GOOGLE_SPREADSHEET_ID) {
 
 // https://hackernoon.com/how-to-use-google-sheets-api-with-nodejs-cz3v316f
 const sheets = google.sheets('v4');
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
+const youtube = google.youtube('v3');
+const SCOPES = [
+	'https://www.googleapis.com/auth/spreadsheets',
+	'https://www.googleapis.com/auth/youtube'
+];
 
 function getAuth() {
 	const auth = new google.auth.GoogleAuth({
@@ -63,7 +68,7 @@ export const handler = async (event) => {
 						if (videos.length === 0) {
 							return {
 								statusCode: 204
-							}
+							};
 						}
 						let data = videos;
 						if (event.queryStringParameters.random) {
@@ -85,11 +90,60 @@ export const handler = async (event) => {
 					};
 				}
 				if (segments.length === 1) {
+					// TODO: move this to PUT eventually.
+					if (segments[0] === 'trigger') {
+						const playlistId = event.queryStringParameters.playlistId;
+
+						if (!playlistId) {
+							throw 'No playlistId parameter provided.';
+						}
+
+						// All this is horrendous, but I want to get it working
+
+						let videoCount;
+						let nextPageToken;
+
+						const res = await getUploadsByPlaylistId(playlistId, youtube, auth);
+
+						videoCount = res.videos.length;
+						nextPageToken = res.nextPageToken;
+						const totalResults = res.totalResults;
+
+						const response = await addImportedVideosToSheet(
+							sheets,
+							spreadsheetId,
+							auth,
+							res.videos
+						);
+
+						while (videoCount < totalResults) {
+							const r = await getUploadsByPlaylistId(
+								playlistId,
+								youtube,
+								auth,
+								nextPageToken
+							);
+							videoCount = videoCount + r.videos.length;
+							nextPageToken = r.nextPageToken;
+							await addImportedVideosToSheet(
+								sheets,
+								spreadsheetId,
+								auth,
+								r.videos
+							);
+						}
+
+						return {
+							statusCode: 200,
+							body: JSON.stringify(response)
+							// 	// body: JSON.stringify(rows[rowId]) // just sends less data over the wire
+						};
+					}
 					const rowId = segments[0];
 					return await getEntity(sheets, spreadsheetId, auth, 'Videos', rowId);
 				} else {
 					throw new Error(
-						'too many segments in GET request - you should only call somehting like /.netlify/functions/google-spreadsheet-fn/123456 not /.netlify/functions/google-spreadsheet-fn/123456/789/101112'
+						'too many segments in GET request - unimplemented'
 					);
 				}
 			/* POST /.netlify/functions/google-spreadsheet-fn */
@@ -107,40 +161,47 @@ export const handler = async (event) => {
 			//       rowNumber: addedRow._rowNumber - 1 // minus the header row
 			//     })
 			//   };
-			// /* PUT /.netlify/functions/google-spreadsheet-fn/123456 */
-			// case 'PUT':
-			//   /* PUT /.netlify/functions/google-spreadsheet-fn */
-			//   if (segments.length === 0) {
-			//     console.error('PUT request must also have an id'); // we could allow mass-updating of the sheet, but nah
-			//     return {
-			//       statusCode: 422, // unprocessable entity https://stackoverflow.com/questions/3050518/what-http-status-response-code-should-i-use-if-the-request-is-missing-a-required
-			//       body: 'PUT request must also have an id.'
-			//     };
-			//   }
-			//   /* PUT /.netlify/functions/google-spreadsheet-fn/123456 */
-			//   if (segments.length === 1) {
-			//     const rowId = segments[0];
-			//     const rows = await sheet.getRows(); // can pass in { limit, offset }
-			//     const data = JSON.parse(event.body);
-			//     data.UserIP = UserIP;
-			//     console.log(`PUT invoked on row ${rowId}`, data);
-			//     const selectedRow = rows[rowId];
-			//     Object.entries(data).forEach(([k, v]) => {
-			//       selectedRow[k] = v;
-			//     });
-			//     await selectedRow.save(); // save updates
-			//     return {
-			//       statusCode: 200,
-			//       body: JSON.stringify({ message: 'PUT is a success!' })
-			//       // body: JSON.stringify(rows[rowId]) // just sends less data over the wire
-			//     };
-			//   } else {
-			//     return {
-			//       statusCode: 500,
-			//       body:
-			//         'too many segments in PUT request - you should only call somehting like /.netlify/functions/google-spreadsheet-fn/123456 not /.netlify/functions/google-spreadsheet-fn/123456/789/101112'
-			//     };
-			//   }
+			// /* PUT /.netlify/functions/videos/123456 */
+			case 'PUT':
+				/* PUT /.netlify/functions/videos */
+				if (segments.length === 0) {
+					console.error('PUT request must also have an id'); // we could allow mass-updating of the sheet, but nah
+					return {
+						statusCode: 422, // unprocessable entity https://stackoverflow.com/questions/3050518/what-http-status-response-code-should-i-use-if-the-request-is-missing-a-required
+						body: 'PUT request must also have an id.'
+					};
+				}
+				/* PUT /.netlify/functions/videos/trigger */
+				if (segments.length === 1) {
+					if (segments[0] === 'trigger') {
+						return {
+							statusCode: 200,
+							body: JSON.stringify({ message: 'PUT trigger is a success!' })
+							// 	// body: JSON.stringify(rows[rowId]) // just sends less data over the wire
+						};
+					} else {
+						// const rowId = segments[0];
+						// const rows = await sheet.getRows(); // can pass in { limit, offset }
+						// const data = JSON.parse(event.body);
+						// data.UserIP = UserIP;
+						// console.log(`PUT invoked on row ${rowId}`, data);
+						// const selectedRow = rows[rowId];
+						// Object.entries(data).forEach(([k, v]) => {
+						// 	selectedRow[k] = v;
+						// });
+						// await selectedRow.save(); // save updates
+						// return {
+						// 	statusCode: 200,
+						// 	body: JSON.stringify({ message: 'PUT is a success!' })
+						// 	// body: JSON.stringify(rows[rowId]) // just sends less data over the wire
+						// };
+					}
+				} else {
+					return {
+						statusCode: 500,
+						body: 'too many segments in PUT request - you should only call somehting like /.netlify/functions/videos/123456 not /.netlify/functions/videos/123456/789/101112'
+					};
+				}
 			// /* DELETE /.netlify/functions/google-spreadsheet-fn/123456 */
 			// case 'DELETE':
 			//   //
