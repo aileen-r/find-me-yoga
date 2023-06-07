@@ -38,7 +38,7 @@
 				<div class="w-1/3">
 					<a
 						class="block focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-400 focus-visible:ring-offset-1 focus-visible:rounded-sm"
-						href={video.url}
+						href={otherVideo.url}
 						target="_blank"
 						rel="noopener noreferrer nofollow">
 						<figure class="relative">
