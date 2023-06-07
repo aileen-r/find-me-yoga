@@ -5,9 +5,9 @@
   export let className;
 </script>
 
-<picture class="flex items-center justify-center relative isolate ratio-{ratio} {className}">
+<picture class="flex items-center justify-center relative isolate ratio-{ratio} {className} m-0">
 	<div class="animate-pulse bg-zinc-200 w-full h-full" />
-	<img class="absolute top-0 left-0 w-full h-full object-cover" {src} {alt} />
+	<img class="absolute top-0 left-0 w-full h-full object-cover !m-0" {src} {alt} />
 </picture>
 
 <style lang="scss">
