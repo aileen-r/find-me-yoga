@@ -19,7 +19,9 @@ function createIndexPageState() {
 
 const indexPageStateStore = createIndexPageState();
 
+
+export default indexPageStateStore;
+
 export {
-	PAGE_STATES,
-	indexPageStateStore
+	PAGE_STATES
 }

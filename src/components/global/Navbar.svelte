@@ -1,5 +1,5 @@
 <script>
-	import { indexPageStateStore } from '../../stores.js';
+	import indexPageStateStore from '../../stores/indexPage';
 
 	import BurgerMenuIcon from './BurgerMenuIcon.svelte';
 	import Mandala from '../landing/Mandala.svelte';

@@ -1,5 +1,5 @@
 <script>
-	import { indexPageStateStore, PAGE_STATES } from '../stores.js';
+	import indexPageStateStore, { PAGE_STATES } from '../stores/indexPage.js';
 	
 	import QuestionsContainer from '../components/landing/QuestionsContainer.svelte';
 	import VideoResult from '../components/landing/VideoResult.svelte';
