@@ -6,6 +6,7 @@
 
 	function handleSubmit(e) {
 		e.preventDefault();
+		localStorage.setItem("subscriptions", JSON.stringify(data.subscriptionSettings));
 	}
 </script>
 
@@ -49,15 +50,15 @@
 
 	<h3>Enable subscriptions</h3>
 
-	<p>WIP: this form is for decoration only right now.</p>
+	<p>WIP: this form updates local storage but doesn't do anything with it.</p>
 
 	<form class="flex flex-col mt-5" on:submit={handleSubmit}>
 		<fieldset>
 			<legend>What subscriptions would you like enabled?</legend>
 
-			{#each data.subscriptions as subscription}
+			{#each data.subscriptionSettings as subscription}
 			<div>
-				<input id={subscription.name} type="checkbox" />
+				<input id={subscription.name} type="checkbox" bind:checked={subscription.enabled} />
 				<label for={subscription.name}>{subscription.name}</label>
 			</div>
 			{/each}
