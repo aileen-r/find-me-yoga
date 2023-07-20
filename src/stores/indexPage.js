@@ -7,7 +7,7 @@ const PAGE_STATES = Object.freeze({
 	error: 'error'
 });
 
-function createIndexPageState() {
+function createIndexPageStateStore() {
 	const { subscribe, set } = writable(PAGE_STATES.questions);
 
 	return {
@@ -17,7 +17,7 @@ function createIndexPageState() {
 	};
 }
 
-const indexPageStateStore = createIndexPageState();
+const indexPageStateStore = createIndexPageStateStore();
 
 
 export default indexPageStateStore;

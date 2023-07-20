@@ -1,12 +1,31 @@
 <script>
+	import subscriptionsStore from '../../stores/subscriptions';
 	import Image from '../../components/global/Image.svelte';
 	/** @type {import('./$types').PageData} */ export let data;
 
 	let loading = false;
 
+	let subscriptionPreferences;
+	subscriptionsStore.subscribe((value) => {
+		subscriptionPreferences = value;
+	});
+
+	function spliceFetchedSubscriptionsWithPrefernces() {
+		// TODO: handle deleted subscriptions? (unlikely)
+		const newSubscriptions = data.subscriptions
+			.filter((subs) => !subscriptionPreferences.find((sp) => sp.name === subs.name))
+			.map(subs => ({
+				name: subs.name,
+				enabled: subs.free
+			}));
+			subscriptionsStore.add(newSubscriptions);
+	}
+
+	spliceFetchedSubscriptionsWithPrefernces();
+
 	function handleSubmit(e) {
 		e.preventDefault();
-		localStorage.setItem("subscriptions", JSON.stringify(data.subscriptionSettings));
+		subscriptionsStore.set(subscriptionPreferences);
 	}
 </script>
 
@@ -56,11 +75,11 @@
 		<fieldset>
 			<legend>What subscriptions would you like enabled?</legend>
 
-			{#each data.subscriptionSettings as subscription}
-			<div>
-				<input id={subscription.name} type="checkbox" bind:checked={subscription.enabled} />
-				<label for={subscription.name}>{subscription.name}</label>
-			</div>
+			{#each subscriptionPreferences as subscription}
+				<div>
+					<input id={subscription.name} type="checkbox" bind:checked={subscription.enabled} />
+					<label for={subscription.name}>{subscription.name}</label>
+				</div>
 			{/each}
 		</fieldset>
 
