@@ -43,12 +43,20 @@ function getWhereConditionFromQueryParameters(params) {
 	if (params.energy && ENERGY_VALUES.includes(params.energy.toLowerCase())) {
 		conditions.push(`H = '${params.energy}'`);
 	}
+	if (params.subscriptions) {
+		const enabledSubscriptionsQuery = params.subscriptions
+		.split(",")
+		.map(sub => `G = '${sub}'`)
+		.join(" or ");
+		conditions.push(`(${enabledSubscriptionsQuery})`)
+	}
 	return conditions.length ? conditions.join(' And ') : '';
 }
 
 async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParameters) {
 	const authHeaders = await auth.getRequestHeaders();
 	const whereCondition = getWhereConditionFromQueryParameters(queryStringParameters);
+	console.log(whereCondition);
 	const requestQueryParameters = {
 		gid: sheetName,
 		tq: `Select A,B,C,D,E,F,G,H,I Where ${whereCondition}`
