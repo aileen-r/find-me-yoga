@@ -1,9 +1,11 @@
 <script>
 	import subscriptionsStore from '../../stores/subscriptions';
+	import Alert from '../../components/global/Alert.svelte';
 	import Image from '../../components/global/Image.svelte';
 	/** @type {import('./$types').PageData} */ export let data;
 
 	let loading = false;
+	let formSuccess = false;
 
 	let subscriptionPreferences;
 	subscriptionsStore.subscribe((value) => {
@@ -14,18 +16,24 @@
 		// TODO: handle deleted subscriptions? (unlikely)
 		const newSubscriptions = data.subscriptions
 			.filter((subs) => !subscriptionPreferences.find((sp) => sp.name === subs.name))
-			.map(subs => ({
+			.map((subs) => ({
 				name: subs.name,
 				enabled: subs.free
 			}));
-			subscriptionsStore.add(newSubscriptions);
+		subscriptionsStore.add(newSubscriptions);
 	}
 
 	spliceFetchedSubscriptionsWithPrefernces();
 
 	function handleSubmit(e) {
+		loading = true;
 		e.preventDefault();
 		subscriptionsStore.set(subscriptionPreferences);
+		// for the sake of some loading time
+		setTimeout(() => {
+			loading = false;
+			formSuccess = true;
+		}, 1000);
 	}
 </script>
 
@@ -69,7 +77,9 @@
 
 	<h3>Enable subscriptions</h3>
 
-	<p>WIP: this form updates local storage but doesn't do anything with it.</p>
+	{#if !loading && formSuccess}
+		<Alert>Subscriptions preferences updated!</Alert>
+	{/if}
 
 	<form class="flex flex-col mt-5" on:submit={handleSubmit}>
 		<fieldset>
@@ -84,8 +94,9 @@
 		</fieldset>
 
 		<button
+			disabled={loading}
 			type="submit"
-			class="mt-5 px-8 pt-1.5 pb-2 bg-zinc-500 text-base text-zinc-50 rounded-full cursor-pointer hover:bg-zinc-600 focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-600 focus-visible:ring-offset-2"
+			class="btn"
 			>{loading ? 'Loading...' : 'Submit'}</button
 		>
 	</form>
