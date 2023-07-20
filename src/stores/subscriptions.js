@@ -9,7 +9,8 @@ try {
   persistedSubscriptions = browser && JSON.parse(localStorage.getItem('subscriptions'));
 } catch (err) {
 	console.error(err);
-	console.info("isBrowser:", browser);
+	console.error("isBrowser:", browser);
+	throw(err, "isBrowser:", browser);
 }
 
 function createSubscriptionsStore() {
