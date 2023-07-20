@@ -4,7 +4,13 @@ import { writable } from 'svelte/store';
 /**
  * Properties: name, enabled
  */
-const persistedSubscriptions = browser && JSON.parse(localStorage.getItem('subscriptions'));
+let persistedSubscriptions
+try {
+  persistedSubscriptions = browser && JSON.parse(localStorage.getItem('subscriptions'));
+} catch (err) {
+	console.error(err);
+	console.info("isBrowser:", browser);
+}
 
 function createSubscriptionsStore() {
 	const { subscribe, set: svelteSet, update } = writable(persistedSubscriptions || []);
