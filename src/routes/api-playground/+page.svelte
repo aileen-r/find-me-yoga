@@ -79,6 +79,11 @@
 			>
 		</li>
 		<li>
+			<a href="/.netlify/functions/subscriptions"
+				>/subscriptions</a
+			>
+		</li>
+		<li>
 			<a href="/.netlify/functions/videos/trigger">/videos/trigger</a> (testing triggering an action
 			that I will later make a cron)
 		</li>
@@ -113,6 +118,6 @@
 		<label for="instructor">Instructor's name (optional)</label>
 		<input id="instructor" type="text" bind:value={instructor} />
 
-		<button type="submit" class="mt-5 px-8 pt-1.5 pb-2 bg-zinc-500 text-base text-zinc-50 rounded-full cursor-pointer hover:bg-zinc-600 focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-600 focus-visible:ring-offset-2">{loading ? 'Loading...' : 'Scrape'}</button>
+		<button type="submit" class="btn">{loading ? 'Loading...' : 'Scrape'}</button>
 	</form>
 </article>

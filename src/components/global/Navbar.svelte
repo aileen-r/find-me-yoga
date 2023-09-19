@@ -1,5 +1,5 @@
 <script>
-	import { indexPageStateStore } from '../../stores.js';
+	import indexPageStateStore from '../../stores/indexPage';
 
 	import BurgerMenuIcon from './BurgerMenuIcon.svelte';
 	import Mandala from '../landing/Mandala.svelte';
@@ -20,12 +20,16 @@
 
 	const links = [
 		{
-			link: '/yoga-library',
-			text: 'Yoga library'
-		},
-		{
 			link: '/about',
 			text: 'About'
+		},
+		{
+			link: '/subscriptions',
+			text: 'Subscriptions'
+		},
+		{
+			link: '/yoga-library',
+			text: 'Yoga library'
 		},
 		{
 			link: '/api-playground',

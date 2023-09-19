@@ -1,6 +1,7 @@
 <script>
-	import { indexPageStateStore, PAGE_STATES } from '../stores.js';
-	
+	import indexPageStateStore, { PAGE_STATES } from '../stores/indexPage.js';
+	import subscriptionsStore from '../stores/subscriptions.js';
+
 	import QuestionsContainer from '../components/landing/QuestionsContainer.svelte';
 	import VideoResult from '../components/landing/VideoResult.svelte';
 	import Loader from '../components/landing/Loader.svelte';
@@ -10,12 +11,21 @@
 		activeState = value;
 	});
 
+	let subscriptionsQueryParam;
+	subscriptionsStore.subscribe((value) => {
+		// TODO: simplify to a reduce
+		subscriptionsQueryParam = value
+			.filter((subs) => subs.enabled)
+			.map((subs) => encodeURIComponent(subs.name))
+			.join(',');
+	});
+
 	let videoData;
 	let error = 'Something went wrong.';
 
 	async function findMeYoga(e) {
 		indexPageStateStore.update(PAGE_STATES.loading);
-		const url = `/.netlify/functions/videos?${e.detail.queryString}&random=true`;
+		const url = `/.netlify/functions/videos?${e.detail.queryString}&random=true&subscriptions=${subscriptionsQueryParam}`;
 		const response = await fetch(url);
 		if (response.ok && response.status === 200) {
 			videoData = await response.json();
@@ -46,7 +56,7 @@
 		<h2>Error</h2>
 		<p>{error}</p>
 		<button
-			class="px-8 pt-1.5 pb-2 bg-zinc-500 text-base text-zinc-50 rounded-full cursor-pointer hover:bg-zinc-600 focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-600 focus-visible:ring-offset-2"
+			class="btn"
 			on:click={backToStart}
 			type="button">Back to start</button
 		>

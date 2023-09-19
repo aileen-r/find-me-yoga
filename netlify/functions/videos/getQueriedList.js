@@ -43,6 +43,13 @@ function getWhereConditionFromQueryParameters(params) {
 	if (params.energy && ENERGY_VALUES.includes(params.energy.toLowerCase())) {
 		conditions.push(`H = '${params.energy}'`);
 	}
+	if (params.subscriptions) {
+		const enabledSubscriptionsQuery = params.subscriptions
+		.split(",")
+		.map(sub => `G = '${sub}'`)
+		.join(" or ");
+		conditions.push(`(${enabledSubscriptionsQuery})`)
+	}
 	return conditions.length ? conditions.join(' And ') : '';
 }
 
