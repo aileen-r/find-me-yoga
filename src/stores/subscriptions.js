@@ -5,13 +5,17 @@ import { writable } from 'svelte/store';
  * Properties: name, enabled
  */
 let persistedSubscriptions
-console.log("browser variable", browser);
-console.log("localStorage", localStorage);
 try {
+	if (browser) {
+		const itemFromStorage = localStorage.getItem('subscriptions');
+		console.log("itemFromStorage", itemFromStorage);
+	}
   persistedSubscriptions = browser && JSON.parse(localStorage.getItem('subscriptions'));
 } catch (err) {
 	console.error(err);
 	console.error("isBrowser:", browser);
+	console.log("browser variable", browser);
+	console.log("localStorage", localStorage);
 	throw("is browser " + browser);
 }
 
