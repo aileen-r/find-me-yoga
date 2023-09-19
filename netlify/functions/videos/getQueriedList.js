@@ -5,6 +5,9 @@ const ENERGY_VALUES = ['high', 'medium', 'low'];
 // TODO: JsDoc
 function getValueFromCol(col) {
 	// col.f gives formatted duration, whereas col.v gives a Date.
+	if (typeof col?.v === 'boolean') {
+		return col.v;
+	}
 	const stringValue = col?.f || col?.v;
 	if (!stringValue) {
 		return null;
@@ -32,7 +35,7 @@ function formatQueryResponse(response) {
 }
 
 function getWhereConditionFromQueryParameters(params) {
-	const conditions = [];
+	const conditions = ['J = FALSE']; // exclude col
 	if (params.maxDuration) {
 		// formats HH:mm:ss to time in minutes (decimal)
 		conditions.push(`HOUR(C)*60+MINUTE(C)+SECOND(C)/60 <= ${params.maxDuration}`);
@@ -58,7 +61,7 @@ async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParamet
 	const whereCondition = getWhereConditionFromQueryParameters(queryStringParameters);
 	const requestQueryParameters = {
 		gid: sheetName,
-		tq: `Select A,B,C,D,E,F,G,H,I Where ${whereCondition}`
+		tq: `Select A,B,C,D,E,F,G,H,I,J Where ${whereCondition}`
 	};
 	const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq${convertObjectToQueryString(
 		requestQueryParameters
