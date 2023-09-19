@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+// import { browser } from '$app/environment';
 import { writable } from 'svelte/store';
 
 /**
@@ -19,7 +19,6 @@ let persistedSubscriptions;
 // 	throw 'is browser ' + browser;
 // }
 
-/* eslint-disable */
 function createSubscriptionsStore() {
 	const { subscribe, set: svelteSet, update } = writable(persistedSubscriptions || []);
 
@@ -27,9 +26,9 @@ function createSubscriptionsStore() {
 		subscribe,
 		set: (subscriptions) => {
 			svelteSet(subscriptions);
-			if (browser) {
-				localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
-			}
+			// if (browser) {
+				localStorage?.setItem('subscriptions', JSON.stringify(subscriptions));
+			// }
 		},
 		add: (newSubsciptions) => {
 			let updatedSubscriptions = [];
@@ -37,9 +36,9 @@ function createSubscriptionsStore() {
 				updatedSubscriptions = [...subscriptions, ...newSubsciptions];
 				return updatedSubscriptions;
 			});
-			if (browser) {
-				localStorage.setItem('subscriptions', JSON.stringify(updatedSubscriptions));
-			}
+			// if (browser) {
+				localStorage?.setItem('subscriptions', JSON.stringify(updatedSubscriptions));
+			// }
 		}
 	};
 }
