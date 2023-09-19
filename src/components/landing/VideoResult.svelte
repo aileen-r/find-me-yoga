@@ -1,6 +1,7 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import Image from '../global/Image.svelte';
+	import VideoThumbnail from './VideoThumbnail.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -18,17 +19,12 @@
 		><h2 class="underline-hover-inverted w-max text-2xl font-bold mx-auto mb-3 pb-2">
 			{video.title}
 		</h2>
-		<figure class="relative">
-			<Image
-				className="w-full"
-				src={video.thumbnail}
-				alt={`Thumbnail for video ${video.title} on ${video.subscription}.`}
-			/>
-			<span
-				class="absolute bottom-0 right-0 mx-3 my-2 pb-0.5 px-2 bg-zinc-900/80 text-zinc-50 rounded-full"
-				>{video.duration}</span
-			>
-		</figure>
+		<VideoThumbnail
+			thumbnail={video.thumbnail}
+			title={video.title}
+			subscription={video.subscription}
+			duration={video.duration}
+		/>
 	</a>
 
 	{#if others.length}
@@ -41,17 +37,13 @@
 						href={otherVideo.url}
 						target="_blank"
 						rel="noopener noreferrer nofollow">
-						<figure class="relative">
-							<Image
-								className="w-full"
-								src={otherVideo.thumbnail}
-								alt={`Thumbnail for video ${otherVideo.title} on ${otherVideo.subscription}.`}
-							/>
-							<span
-								class="absolute bottom-0 right-0 mx-2 my-1 pb-0.5 px-2 bg-zinc-900/80 text-zinc-50 text-xs rounded-full"
-								>{otherVideo.duration}</span
-							>
-						</figure>
+						<VideoThumbnail
+							thumbnail={otherVideo.thumbnail}
+							title={otherVideo.title}
+							subscription={otherVideo.subscription}
+							duration={otherVideo.duration}
+							size="small"
+						/>
 						<h4 class="underline hover:no-underline">{otherVideo.title}</h4></a
 					>
 				</div>
