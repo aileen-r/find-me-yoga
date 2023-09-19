@@ -53,7 +53,7 @@
 	<h3>In the library</h3>
 
 	<div class="flex gap-2">
-		<!-- {#each data.subscriptions as subscription}
+		{#each data.subscriptions as subscription}
 			<div class="w-1/3">
 				<a
 					class="block focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-400 focus-visible:ring-offset-1 focus-visible:rounded-sm"
@@ -72,7 +72,7 @@
 					|&nbsp;<span class="text-lg uppercase">{subscription.free ? 'free' : 'paid'}</span></a
 				>
 			</div>
-		{/each} -->
+		{/each}
 	</div>
 
 	<h3>Enable subscriptions</h3>

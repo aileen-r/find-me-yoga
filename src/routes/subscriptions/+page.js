@@ -2,7 +2,6 @@
 export async function load({ fetch }) {
   try {
     const res = await fetch(`/.netlify/functions/subscriptions`);
-    console.log({res});
 
     /**
      * Properties: name, free, thumbnail, url
@@ -10,8 +9,7 @@ export async function load({ fetch }) {
     const subscriptions = await res.json();
    
     return { subscriptions };
-  } catch (error) {
-    console.error({error});
-    return {error};
+  } catch (err) {
+    console.error(err);
   }
 }
