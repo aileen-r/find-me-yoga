@@ -1,6 +1,6 @@
 <script>
 	import indexPageStateStore, { PAGE_STATES } from '../stores/indexPage.js';
-	// import subscriptionsStore from '../stores/subscriptions.js';
+	import subscriptionsStore from '../stores/subscriptions.js';
 
 	import QuestionsContainer from '../components/landing/QuestionsContainer.svelte';
 	import VideoResult from '../components/landing/VideoResult.svelte';
@@ -12,13 +12,13 @@
 	});
 
 	let subscriptionsQueryParam;
-	// subscriptionsStore.subscribe((value) => {
-	// 	// TODO: simplify to a reduce
-	// 	subscriptionsQueryParam = value
-	// 		.filter((subs) => subs.enabled)
-	// 		.map((subs) => encodeURIComponent(subs.name))
-	// 		.join(',');
-	// });
+	subscriptionsStore.subscribe((value) => {
+		// TODO: simplify to a reduce
+		subscriptionsQueryParam = value
+			.filter((subs) => subs.enabled)
+			.map((subs) => encodeURIComponent(subs.name))
+			.join(',');
+	});
 
 	let videoData;
 	let error = 'Something went wrong.';
