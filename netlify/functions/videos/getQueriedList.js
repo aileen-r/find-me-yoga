@@ -56,7 +56,6 @@ function getWhereConditionFromQueryParameters(params) {
 async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParameters) {
 	const authHeaders = await auth.getRequestHeaders();
 	const whereCondition = getWhereConditionFromQueryParameters(queryStringParameters);
-	console.log(whereCondition);
 	const requestQueryParameters = {
 		gid: sheetName,
 		tq: `Select A,B,C,D,E,F,G,H,I Where ${whereCondition}`
