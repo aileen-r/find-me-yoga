@@ -1,4 +1,5 @@
 <script>
+	import {createEventDispatcher} from 'svelte';
 	import clickOutside from '../../directives/clickOutside';
 	import Image from '../global/Image.svelte';
 
@@ -7,6 +8,7 @@
 		large: 'large'
 	});
 
+	export let url; // only in use as an id
 	export let thumbnail;
 	export let title;
 	export let subscription;
@@ -77,6 +79,12 @@
 	function hideMenu() {
 		showMenu = false;
 	}
+
+	const dispatch = createEventDispatcher()
+
+  function excludeVideo() {
+    dispatch('exclude-video', {url});
+	}
 </script>
 
 <figure class="relative">
@@ -98,7 +106,9 @@
 				class="bg-white py-1 mt-2 relative leading-none context-menu"
 				style="--arrow-offset: {arrowOffset}"
 			>
-				<li><button type="button" class="px-3 py-1 hover:bg-slate-200">Exclude video</button></li>
+				<li>
+					<button type="button" class="px-3 py-1 hover:bg-slate-200" on:click={excludeVideo}>Exclude video</button>
+				</li>
 			</ul>
 		{/if}
 	</div>
