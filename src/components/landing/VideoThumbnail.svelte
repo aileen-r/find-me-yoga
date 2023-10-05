@@ -1,16 +1,18 @@
 <script>
+	import clickOutside from '../../directives/clickOutside';
 	import Image from '../global/Image.svelte';
 
-  const sizes = Object.freeze({
-    small: 'small',
-    large: 'large'
-  });
+	const sizes = Object.freeze({
+		small: 'small',
+		large: 'large'
+	});
 
 	export let thumbnail;
 	export let title;
 	export let subscription;
 	export let duration;
 	export let size = 'large';
+	let showMenu = false;
 
 	function getDurationPillClass(size) {
 		let pillClass =
@@ -24,31 +26,57 @@
 		return pillClass;
 	}
 
-  function getOptionsButtonClass(size) {
-    let buttonClass = 'absolute top-0 right-0 bg-white text-slate-800 rounded-full drop-shadow-md leading-none z-20 focus-visible:outline-none focus-visible:bg-slate-800 focus-visible:text-white';
-    if (size === sizes.small) {
-			buttonClass += ' mx-1 my-1 text-3xl w-7 h-7';
+	function getButtonContainerClass(size) {
+		let containerClass = 'absolute top-0 right-0 text-right z-20';
+		if (size === sizes.small) {
+			containerClass += ' mx-2 my-1';
 		}
 		if (size === sizes.large) {
-			buttonClass += ' mx-2 my-2 text-4xl w-8 h-8';
+			containerClass += ' mx-3 my-2';
 		}
-    return buttonClass
-  }
+		return containerClass;
+	}
 
-  function getDotsClass(size) {
-    let dotsClass = 'absolute inset-0';
-    if (size === sizes.small) {
+	function getOptionsButtonClass(size) {
+		let buttonClass =
+			'bg-white text-slate-800 rounded-full drop-shadow-md leading-none mr-[-2px] focus-visible:outline-none focus-visible:bg-slate-800 focus-visible:text-white hover:bg-slate-800 hover:text-white';
+		if (size === sizes.small) {
+			buttonClass += ' text-3xl w-7 h-7';
+		}
+		if (size === sizes.large) {
+			buttonClass += ' text-4xl w-8 h-8';
+		}
+		return buttonClass;
+	}
+
+	function getDotsClass(size) {
+		let dotsClass = 'absolute inset-0';
+		if (size === sizes.small) {
 			dotsClass += ' mt-[-3px]';
 		}
 		if (size === sizes.large) {
 			dotsClass += ' mt-[-5px]';
 		}
-    return dotsClass;
-  }
+		return dotsClass;
+	}
+
+	function getArrowOffset(size) {
+		return size === sizes.large ? '9px' : '7px';
+	}
 
 	$: durationPillClass = getDurationPillClass(size);
-  $: optionsButtonClass = getOptionsButtonClass(size);
-  $: dotsClass = getDotsClass(size);
+	$: buttonContainerClass = getButtonContainerClass(size);
+	$: optionsButtonClass = getOptionsButtonClass(size);
+	$: dotsClass = getDotsClass(size);
+	$: arrowOffset = getArrowOffset(size);
+
+	function toggleMenu() {
+		showMenu = !showMenu;
+	}
+
+	function hideMenu() {
+		showMenu = false;
+	}
 </script>
 
 <figure class="relative">
@@ -57,6 +85,36 @@
 		src={thumbnail}
 		alt={`Thumbnail for video ${title} on ${subscription}.`}
 	/>
-  <button type="button" class={optionsButtonClass}><span class={dotsClass}>&middot;&middot;&middot;</span></button>
+	<div class={buttonContainerClass}>
+		<button type="button" class={optionsButtonClass} 
+			use:clickOutside={hideMenu}
+			on:click={toggleMenu}
+			><span class={dotsClass}
+				>&middot;&middot;&middot;<span class="sr-only">More options</span></span
+			></button
+		>
+		{#if showMenu}
+			<ul
+				class="bg-white py-1 mt-2 relative leading-none context-menu"
+				style="--arrow-offset: {arrowOffset}"
+			>
+				<li><button type="button" class="px-3 py-1 hover:bg-slate-200">Exclude video</button></li>
+			</ul>
+		{/if}
+	</div>
 	<span class={durationPillClass}>{duration}</span>
 </figure>
+
+<style>
+	.context-menu::before {
+		border-bottom: 5px solid white;
+		border-left: 5px solid transparent;
+		border-right: 5px solid transparent;
+		content: '';
+		height: 0;
+		position: absolute;
+		right: var(--arrow-offset);
+		top: -4px;
+		width: 0;
+	}
+</style>

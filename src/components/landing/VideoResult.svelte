@@ -1,6 +1,5 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
-	import Image from '../global/Image.svelte';
 	import VideoThumbnail from './VideoThumbnail.svelte';
 
 	const dispatch = createEventDispatcher();
@@ -11,7 +10,7 @@
 
 	export let videoData;
 	$: video = videoData.video;
-	$: others = videoData.others;
+	$: others = videoData.others.map(video => ({...video, excluded: false}));
 </script>
 
 <article class="text-center">
