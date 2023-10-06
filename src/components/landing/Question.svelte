@@ -2,6 +2,8 @@
 	import { createEventDispatcher } from 'svelte';
 	import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@rgossiaux/svelte-headlessui';
 
+	import { actionTypes } from '../../data/questions';
+
 	import OptionTile from './OptionTile.svelte';
 
 	export let id;
@@ -9,15 +11,24 @@
 	export let options;
 
 	let selectedOption;
+	let visibleOptions = options;
 
 	const dispatch = createEventDispatcher();
 
 	function updateSelection(e) {
 		selectedOption = e.detail;
-		dispatch('option-selected', {
-			id,
-			param: e.detail
-		});
+		if (e.detail.param) {
+			dispatch('option-selected', {
+				id,
+				param: e.detail.param
+			});
+			return;
+		}
+		if (e.detail.action === actionTypes.expandOptions) {
+			visibleOptions = e.detail.options;
+		} else if (e.detail.action === actionTypes.collapseOptions) {
+			visibleOptions = options;
+		}
 	}
 </script>
 
@@ -28,10 +39,10 @@
 	on:change={updateSelection}
 >
 	<RadioGroupLabel class="grow shrink-0 basis-full text-lg">{questionText}</RadioGroupLabel>
-	{#each options as option}
+	{#each visibleOptions as option}
 		<RadioGroupOption
 			class="rounded-xl focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-600 focus-visible:ring-offset-2"
-			value={option.param}
+			value={option}
 			let:checked
 		>
 			<OptionTile {checked} text={option.displayText} />
