@@ -17,14 +17,29 @@
 	$: video = extendedVideoData.video;
 	$: others = extendedVideoData.others;
 
-	function excludeVideo(event) {
-		const url = event.detail.url;
-		if (video.url === url) {
+	async function excludeVideo(event) {
+		const id = event.detail.id;
+		if (video.id === id) {
 			extendedVideoData.video.excluded = true;
-			return;
-		}
-		const videoIdx = others.findIndex((video) => video.url === url);
+		} else {
+			const videoIdx = others.findIndex((video) => video.id === id);
 		extendedVideoData.others[videoIdx].excluded = true;
+		}
+		
+		const url = `/.netlify/functions/videos/exclude/${id}`;
+		try {
+			const response = await fetch(url, {
+				method: 'PUT',
+				headers: { 'Content-Length': '0' },
+			});
+			if (!response.ok || !response.status === 204) {
+				const errorText = await response.text();
+				console.error(errorText);
+			}
+		} catch (err) {
+			excludeFeedbackType = feedbackTypes.error;
+			excludeFeedbackMsg = 'Something went wrong. Check the developer console.';
+		}
 	}
 </script>
 
@@ -43,7 +58,7 @@
 			{/if}
 		</h2>
 		<VideoThumbnail
-			url={video.url}
+			id={video.id}
 			thumbnail={video.thumbnail}
 			title={video.title}
 			subscription={video.subscription}
@@ -56,9 +71,13 @@
 		<h3 class="text-xl mt-8 mb-3 text-left">Or, you could try...</h3>
 		<div class="flex gap-2">
 			{#each others as otherVideo}
-				<div class="card w-1/3" class:opacity-40={otherVideo.excluded} class:grayscale={otherVideo.excluded}>
+				<div
+					class="card w-1/3"
+					class:opacity-40={otherVideo.excluded}
+					class:grayscale={otherVideo.excluded}
+				>
 					<VideoThumbnail
-						url={otherVideo.url}
+						id={otherVideo.id}
 						thumbnail={otherVideo.thumbnail}
 						title={otherVideo.title}
 						subscription={otherVideo.subscription}

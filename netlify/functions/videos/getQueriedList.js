@@ -5,7 +5,7 @@ const ENERGY_VALUES = ['high', 'medium', 'low'];
 // TODO: JsDoc
 function getValueFromCol(col) {
 	// col.f gives formatted duration, whereas col.v gives a Date.
-	if (typeof col?.v === 'boolean') {
+	if (typeof col?.v === 'boolean' || typeof col?.v === 'number') {
 		return col.v;
 	}
 	const stringValue = col?.f || col?.v;
@@ -61,7 +61,7 @@ async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParamet
 	const whereCondition = getWhereConditionFromQueryParameters(queryStringParameters);
 	const requestQueryParameters = {
 		gid: sheetName,
-		tq: `Select A,B,C,D,E,F,G,H,I,J Where ${whereCondition}`
+		tq: `Select A,B,C,D,E,F,G,H,I,J,K Where ${whereCondition}`
 	};
 	const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq${convertObjectToQueryString(
 		requestQueryParameters

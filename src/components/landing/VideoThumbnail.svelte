@@ -8,7 +8,7 @@
 		large: 'large'
 	});
 
-	export let url; // only in use as an id
+	export let id;
 	export let thumbnail;
 	export let title;
 	export let subscription;
@@ -83,7 +83,7 @@
 	const dispatch = createEventDispatcher()
 
   function excludeVideo() {
-    dispatch('exclude-video', {url});
+    dispatch('exclude-video', {id});
 	}
 </script>
 

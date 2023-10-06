@@ -75,7 +75,6 @@
 				method: 'PUT',
 				headers: { 'Content-Length': '0' },
 			});
-			console.log(response);
 			if (response.ok && response.status === 204) {
 				excludeFeedbackMsg = `Successfully excluded video ${videoId}.`;
 				excludeFeedbackType = feedbackTypes.success;
