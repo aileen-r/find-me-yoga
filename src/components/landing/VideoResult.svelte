@@ -1,6 +1,6 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
-	import Image from '../global/Image.svelte';
+	import VideoThumbnail from './VideoThumbnail.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -9,58 +9,97 @@
 	}
 
 	export let videoData;
-	$: video = videoData.video;
-	$: others = videoData.others;
+	let extendedVideoData = {
+		video: { ...videoData.video, excluded: false },
+		others: videoData.others.map((video) => ({ ...video, excluded: false }))
+	};
+
+	$: video = extendedVideoData.video;
+	$: others = extendedVideoData.others;
+
+	async function excludeVideo(event) {
+		const id = event.detail.id;
+		if (video.id === id) {
+			extendedVideoData.video.excluded = true;
+		} else {
+			const videoIdx = others.findIndex((video) => video.id === id);
+		extendedVideoData.others[videoIdx].excluded = true;
+		}
+		
+		const url = `/.netlify/functions/videos/exclude/${id}`;
+		try {
+			const response = await fetch(url, {
+				method: 'PUT',
+				headers: { 'Content-Length': '0' },
+			});
+			if (!response.ok || !response.status === 204) {
+				const errorText = await response.text();
+				console.error(errorText);
+			}
+		} catch (err) {
+			excludeFeedbackType = feedbackTypes.error;
+			excludeFeedbackMsg = 'Something went wrong. Check the developer console.';
+		}
+	}
 </script>
 
 <article class="text-center">
-	<a class="block focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-400 focus-visible:ring-offset-4 focus-visible:rounded" href={video.url} target="_blank" rel="noopener noreferrer nofollow"
-		><h2 class="underline-hover-inverted w-max text-2xl font-bold mx-auto mb-3 pb-2">
-			{video.title}
+	<div class="card" class:opacity-40={video.excluded} class:grayscale={video.excluded}>
+		<h2 class="underline-hover-inverted w-max text-2xl font-bold mx-auto mb-3 pb-2">
+			{#if video.excluded}
+				<span>{video.title}</span>
+			{:else}
+				<a
+					class="card-primary-action"
+					href={video.url}
+					target="_blank"
+					rel="noopener noreferrer nofollow">{video.title}</a
+				>
+			{/if}
 		</h2>
-		<figure class="relative">
-			<Image
-				className="w-full"
-				src={video.thumbnail}
-				alt={`Thumbnail for video ${video.title} on ${video.subscription}.`}
-			/>
-			<span
-				class="absolute bottom-0 right-0 mx-3 my-2 pb-0.5 px-2 bg-zinc-900/80 text-zinc-50 rounded-full"
-				>{video.duration}</span
-			>
-		</figure>
-	</a>
+		<VideoThumbnail
+			id={video.id}
+			thumbnail={video.thumbnail}
+			title={video.title}
+			subscription={video.subscription}
+			duration={video.duration}
+			on:exclude-video={excludeVideo}
+		/>
+	</div>
 
 	{#if others.length}
 		<h3 class="text-xl mt-8 mb-3 text-left">Or, you could try...</h3>
 		<div class="flex gap-2">
 			{#each others as otherVideo}
-				<div class="w-1/3">
-					<a
-						class="block focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-400 focus-visible:ring-offset-1 focus-visible:rounded-sm"
-						href={otherVideo.url}
-						target="_blank"
-						rel="noopener noreferrer nofollow">
-						<figure class="relative">
-							<Image
-								className="w-full"
-								src={otherVideo.thumbnail}
-								alt={`Thumbnail for video ${otherVideo.title} on ${otherVideo.subscription}.`}
-							/>
-							<span
-								class="absolute bottom-0 right-0 mx-2 my-1 pb-0.5 px-2 bg-zinc-900/80 text-zinc-50 text-xs rounded-full"
-								>{otherVideo.duration}</span
+				<div
+					class="card w-1/3"
+					class:opacity-40={otherVideo.excluded}
+					class:grayscale={otherVideo.excluded}
+				>
+					<VideoThumbnail
+						id={otherVideo.id}
+						thumbnail={otherVideo.thumbnail}
+						title={otherVideo.title}
+						subscription={otherVideo.subscription}
+						duration={otherVideo.duration}
+						size="small"
+						on:exclude-video={excludeVideo}
+					/>
+					<h4>
+						{#if otherVideo.excluded}
+							<span>{otherVideo.title}</span>
+						{:else}
+							<a
+								class="card-primary-action underline hover:no-underline"
+								href={otherVideo.url}
+								target="_blank"
+								rel="noopener noreferrer nofollow">{otherVideo.title}</a
 							>
-						</figure>
-						<h4 class="underline hover:no-underline">{otherVideo.title}</h4></a
-					>
+						{/if}
+					</h4>
 				</div>
 			{/each}
 		</div>
 	{/if}
-	<button
-		class="btn"
-		on:click={backToStart}
-		type="button">Back to start</button
-	>
+	<button class="btn" on:click={backToStart} type="button">Back to start</button>
 </article>

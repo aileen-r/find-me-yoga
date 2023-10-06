@@ -4,6 +4,7 @@ import { google } from 'googleapis';
 import getList from './videos/getList';
 import getEntity from './videos/getEntity';
 import getQueriedList from './videos/getQueriedList';
+import {excludeVideo} from './videos/updateEntity';
 import { selectUniqueRandomVideos } from './videos/selectRandomVideo';
 import { getUploadsByPlaylistId, addImportedVideosToSheet } from './videos/youtubeImport';
 
@@ -117,20 +118,10 @@ export const handler = async (event) => {
 						);
 
 						while (videoCount < totalResults) {
-							const r = await getUploadsByPlaylistId(
-								playlistId,
-								youtube,
-								auth,
-								nextPageToken
-							);
+							const r = await getUploadsByPlaylistId(playlistId, youtube, auth, nextPageToken);
 							videoCount = videoCount + r.videos.length;
 							nextPageToken = r.nextPageToken;
-							await addImportedVideosToSheet(
-								sheets,
-								spreadsheetId,
-								auth,
-								r.videos
-							);
+							await addImportedVideosToSheet(sheets, spreadsheetId, auth, r.videos);
 						}
 
 						return {
@@ -139,6 +130,7 @@ export const handler = async (event) => {
 							// 	// body: JSON.stringify(rows[rowId]) // just sends less data over the wire
 						};
 					}
+					/* GET /.netlify/functions/videos/{id} */
 					const rowId = segments[0];
 					return await getEntity(sheets, spreadsheetId, auth, 'Videos', rowId);
 				} else {
@@ -171,35 +163,32 @@ export const handler = async (event) => {
 						body: 'PUT request must also have an id.'
 					};
 				}
-				/* PUT /.netlify/functions/videos/trigger */
 				if (segments.length === 1) {
 					if (segments[0] === 'trigger') {
+						/* PUT /.netlify/functions/videos/trigger */
 						return {
 							statusCode: 200,
 							body: JSON.stringify({ message: 'PUT trigger is a success!' })
 							// 	// body: JSON.stringify(rows[rowId]) // just sends less data over the wire
 						};
-					} else {
-						// const rowId = segments[0];
-						// const rows = await sheet.getRows(); // can pass in { limit, offset }
-						// const data = JSON.parse(event.body);
-						// data.UserIP = UserIP;
-						// console.log(`PUT invoked on row ${rowId}`, data);
-						// const selectedRow = rows[rowId];
-						// Object.entries(data).forEach(([k, v]) => {
-						// 	selectedRow[k] = v;
-						// });
-						// await selectedRow.save(); // save updates
-						// return {
-						// 	statusCode: 200,
-						// 	body: JSON.stringify({ message: 'PUT is a success!' })
-						// 	// body: JSON.stringify(rows[rowId]) // just sends less data over the wire
-						// };
 					}
+				} else if (segments[0] === 'exclude') {
+					/* PUT /.netlify/functions/videos/exclude/{id} */
+					if (segments.length !== 2) {
+						console.error('exclude request must have an id');
+						return {
+							statusCode: 422, // unprocessable entity https://stackoverflow.com/questions/3050518/what-http-status-response-code-should-i-use-if-the-request-is-missing-a-required
+							body: 'PUT request /videos/exclude/{id} must have an id.'
+						};
+					}
+
+					const videoId = segments[1];
+
+					return await excludeVideo(sheets, spreadsheetId, auth, 'Videos', videoId);
 				} else {
 					return {
 						statusCode: 500,
-						body: 'too many segments in PUT request - you should only call somehting like /.netlify/functions/videos/123456 not /.netlify/functions/videos/123456/789/101112'
+						body: 'too many segments in PUT request - you should only call something like /.netlify/functions/videos/123456 not /.netlify/functions/videos/123456/789/101112'
 					};
 				}
 			// /* DELETE /.netlify/functions/google-spreadsheet-fn/123456 */
