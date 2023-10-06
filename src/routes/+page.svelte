@@ -1,4 +1,5 @@
 <script>
+	import { fade } from 'svelte/transition';
 	import indexPageStateStore, { PAGE_STATES } from '../stores/indexPage.js';
 	import subscriptionsStore from '../stores/subscriptions.js';
 
@@ -44,21 +45,22 @@
 </script>
 
 {#if activeState === PAGE_STATES.loading}
-	<div class="flex flex-col items-center">
+	<div class="flex flex-col w-full h-full justify-center items-center absolute bg-zinc-50 -mt-8" transition:fade>
 		<Loader />
 	</div>
-{:else if activeState === PAGE_STATES.questions}
-	<QuestionsContainer on:find-me-yoga={findMeYoga} />
+{/if}
+{#if activeState === PAGE_STATES.questions}
+	<div class="flex flex-col flex-auto" in:fade={{ delay: 601 }} out:fade>
+		<QuestionsContainer on:find-me-yoga={findMeYoga} />
+	</div>
 {:else if activeState === PAGE_STATES.video}
-	<VideoResult {videoData} on:back-to-start={backToStart} />
+	<div in:fade={{ delay: 601 }} out:fade>
+		<VideoResult {videoData} on:back-to-start={backToStart} />
+	</div>
 {:else if activeState === PAGE_STATES.error}
 	<article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">
 		<h2>Error</h2>
 		<p>{error}</p>
-		<button
-			class="btn"
-			on:click={backToStart}
-			type="button">Back to start</button
-		>
+		<button class="btn" on:click={backToStart} type="button">Back to start</button>
 	</article>
 {/if}
