@@ -2,14 +2,16 @@ import puppeteer from 'puppeteer';
 
 const COMMUNE_LIBRARY_URL = 'https://communeyogastudio.com/categories/full-class-library';
 
-async function scrapeCommune() {
+async function scrapeCommune(pageNum) {
 	try {
+    const url = pageNum ? COMMUNE_LIBRARY_URL + `?page=${pageNum}` : COMMUNE_LIBRARY_URL;
+
 		// Launch the browser and open a new blank page
 		const browser = await puppeteer.launch({ headless: 'new' });
 		const page = await browser.newPage();
 
 		// Navigate the page to a URL
-		await page.goto(COMMUNE_LIBRARY_URL + '?page=27');
+		await page.goto(url);
 
 		const data = await page.evaluate(() => {
 			const videos = [];

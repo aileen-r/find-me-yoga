@@ -143,7 +143,8 @@ export const handler = async (event) => {
 			case 'POST':
 				/* POST /.netlify/functions/videos/scrapeCommune */
 				if (segments[0] === 'scrapeCommune') {
-					const videos = await scrapeCommune()
+					const page = event.queryStringParameters.page;
+					const videos = await scrapeCommune(page)
 					const response = await addImportedVideosToSheet(
 						sheets,
 						spreadsheetId,

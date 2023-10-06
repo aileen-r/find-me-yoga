@@ -1,5 +1,6 @@
 <script>
-	import Alert from '../../components/global/Alert.svelte';
+	import CommuneScraper from '../../components/api-playground/CommuneScraper.svelte';
+import Alert from '../../components/global/Alert.svelte';
 
 	const feedbackTypes = Object.freeze({
 		success: 'success',
@@ -90,23 +91,6 @@
 		} finally {
 			videoId = '';
 			excludeLoading = false;
-		}
-	}
-
-	async function scrapeCommune(e) {
-		e.preventDefault();
-		const url = '/.netlify/functions/videos/scrapeCommune';
-		try {
-			const response = await fetch(url, {
-				method: 'POST',
-				headers: { 'Content-Length': '0' }
-			});
-			if (!response.ok) {
-				const errorText = await response.text();
-				console.error(errorText);
-			}
-		} catch (err) {
-			console.error(err);
 		}
 	}
 </script>
@@ -215,7 +199,5 @@
 		>
 	</form>
 
-	<h4>Scrape Commune</h4>
-	<p>A WIP attempt at scraping the library at Commune's online platform.</p>
-	<button class="btn" on:click={scrapeCommune}>Scrape</button>
+	<CommuneScraper />
 </article>
