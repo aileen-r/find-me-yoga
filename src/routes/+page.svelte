@@ -45,16 +45,19 @@
 </script>
 
 {#if activeState === PAGE_STATES.loading}
-	<div class="flex flex-col w-full h-full justify-center items-center absolute bg-zinc-50 -mt-8" transition:fade>
+	<div
+		class="flex flex-col w-full h-full justify-center items-center absolute bg-zinc-50 -mt-8"
+		transition:fade|local
+	>
 		<Loader />
 	</div>
 {/if}
 {#if activeState === PAGE_STATES.questions}
-	<div class="flex flex-col flex-auto" in:fade={{ delay: 601 }} out:fade>
+	<div class="flex flex-col flex-auto" in:fade|local={{ delay: 601 }} out:fade|local>
 		<QuestionsContainer on:find-me-yoga={findMeYoga} />
 	</div>
 {:else if activeState === PAGE_STATES.video}
-	<div in:fade={{ delay: 601 }} out:fade>
+	<div in:fade|local={{ delay: 601 }} out:fade|local>
 		<VideoResult {videoData} on:back-to-start={backToStart} />
 	</div>
 {:else if activeState === PAGE_STATES.error}

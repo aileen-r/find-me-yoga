@@ -66,12 +66,12 @@
 		{#if activeQuestion === question.id}
 			<div
 				class="absolute text-center w-full -mt-24"
-				in:fly={{
+				in:fly|local={{
 					delay: question.id > 1 || direction === directions.back ? 600 : 0,
 					duration: 600,
 					y: getYCoord(question.id, true)
 				}}
-				out:fly={{ duration: 600, y: getYCoord(question.id, false) }}
+				out:fly|local={{ duration: 600, y: getYCoord(question.id, false) }}
 			>
 				<Question
 					id={question.id}
@@ -84,7 +84,7 @@
 	{/each}
 	{#if activeQuestion > 1}
 	<!-- TODO: sort fly firections -->
-		<div class="mt-40" in:fly={{ delay: 600, duration: 600, y: 30 }} out:fly={{ duration: 600, y: buttonsOutYCoord }}>
+		<div class="mt-40" in:fly|local={{ delay: 600, duration: 600, y: 30 }} out:fly|local={{ duration: 600, y: buttonsOutYCoord }}>
 			<button class="btn" on:click={() => previousQuestion()}>Back</button>
 			<button class="btn" on:click={handleCtaClick} disabled={ctaDisabled}>Find me yoga</button>
 		</div>
