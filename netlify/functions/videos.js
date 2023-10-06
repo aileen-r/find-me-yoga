@@ -7,6 +7,7 @@ import getQueriedList from './videos/getQueriedList';
 import { excludeVideo } from './videos/updateEntity';
 import { selectUniqueRandomVideos } from './videos/selectRandomVideo';
 import { getUploadsByPlaylistId, addImportedVideosToSheet } from './videos/youtubeImport';
+import scrapeCommune from './videos/scrapeCommune';
 
 // required env vars
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
@@ -94,6 +95,7 @@ export const handler = async (event) => {
 					// TODO: move this to POST eventually.
 					if (segments[0] === 'trigger') {
 						const playlistId = event.queryStringParameters.playlistId;
+						const instructor = event.queryStringParameters.instructor || '';
 
 						if (!playlistId) {
 							throw 'No playlistId parameter provided.';
@@ -104,7 +106,7 @@ export const handler = async (event) => {
 						let videoCount;
 						let nextPageToken;
 
-						const res = await getUploadsByPlaylistId(playlistId, youtube, auth);
+						const res = await getUploadsByPlaylistId(playlistId, youtube, auth, instructor);
 
 						videoCount = res.videos.length;
 						nextPageToken = res.nextPageToken;
@@ -135,15 +137,22 @@ export const handler = async (event) => {
 					return await getEntity(sheets, spreadsheetId, auth, 'Videos', rowId);
 				} else {
 					throw new Error(
-						'too many segments in GET request - you should only call somehting like /.netlify/functions/videos/123456 not /.netlify/functions/videos/123456/789/101112'
+						'too many segments in GET request - you should only call something like /.netlify/functions/videos/123456 not /.netlify/functions/videos/123456/789/101112'
 					);
 				}
 			case 'POST':
 				/* POST /.netlify/functions/videos/scrapeCommune */
 				if (segments[0] === 'scrapeCommune') {
+					const videos = await scrapeCommune()
+					const response = await addImportedVideosToSheet(
+						sheets,
+						spreadsheetId,
+						auth,
+						videos
+					);
 					return {
 						statusCode: 200,
-						message: 'Success'
+						body: JSON.stringify(response)
 					};
 				}
 				throw new Error('Unspecified POST request');
