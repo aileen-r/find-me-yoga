@@ -22,7 +22,7 @@ Here are my planned "big ticket" items for this app, if I don't lose interest in
 - [x] The "find me yoga" flow which asks about duration and energy.
 - [x] Subscription (i.e. to a yoga platform) preferences which can be checked and unchecked, which filters what videos can be chosen. Preference can live in local storage for now.
 - [x] The "find me yoga" flow prioritises videos with incomplete meta data.
-- [ ] Extra goal: allow videos to be excluded. (Some yoga YouTube channels have non-yoga videos, for example).
+- [x] Extra goal: allow videos to be excluded. (Some yoga YouTube channels have non-yoga videos, for example).
 
 ### Version 2
 - [ ] Yoga library: a readonly view for visitors with metadata, searching, and filters.
@@ -40,6 +40,9 @@ Here are my planned "big ticket" items for this app, if I don't lose interest in
 
 ### Version 6
 - [ ] Yoga journal: a feature for capturing some notes which are attached to a single "practice" entity.
+
+### Miscellaneous goals
+- [ ] A scraper for my yoga platform subscriptions.
 
 ## Local development
 

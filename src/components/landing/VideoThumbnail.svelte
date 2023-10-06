@@ -41,7 +41,7 @@
 
 	function getOptionsButtonClass(size) {
 		let buttonClass =
-			'bg-white text-slate-800 rounded-full drop-shadow-md leading-none mr-[-2px] focus-visible:outline-none focus-visible:bg-slate-800 focus-visible:text-white hover:bg-slate-800 hover:text-white';
+			'bg-white text-zinc-800 rounded-full drop-shadow-md leading-none mr-[-2px] focus-visible:outline-none focus-visible:bg-zinc-800 focus-visible:text-white hover:bg-zinc-800 hover:text-white';
 		if (size === sizes.small) {
 			buttonClass += ' text-3xl w-7 h-7';
 		}
@@ -107,7 +107,7 @@
 				style="--arrow-offset: {arrowOffset}"
 			>
 				<li>
-					<button type="button" class="px-3 py-1 hover:bg-slate-200" on:click={excludeVideo}>Exclude video</button>
+					<button type="button" class="px-3 py-1 hover:bg-zinc-200" on:click={excludeVideo}>Exclude video</button>
 				</li>
 			</ul>
 		{/if}
