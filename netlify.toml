@@ -2,7 +2,7 @@
   node_bundler = "esbuild"
 
 [functions.videos]
-  external_node_modules = ["googleapis"]
+  external_node_modules = ["googleapis", "puppeteer"]
   included_files = ["netlify/functions/googleapi-keys*.json"]
 
 [functions.subscriptions]

@@ -73,7 +73,7 @@
 		try {
 			const response = await fetch(url, {
 				method: 'PUT',
-				headers: { 'Content-Length': '0' },
+				headers: { 'Content-Length': '0' }
 			});
 			if (response.ok && response.status === 204) {
 				excludeFeedbackMsg = `Successfully excluded video ${videoId}.`;
@@ -91,7 +91,24 @@
 			videoId = '';
 			excludeLoading = false;
 		}
-	}	
+	}
+
+	async function scrapeCommune(e) {
+		e.preventDefault();
+		const url = '/.netlify/functions/videos/scrapeCommune';
+		try {
+			const response = await fetch(url, {
+				method: 'POST',
+				headers: { 'Content-Length': '0' }
+			});
+			if (!response.ok) {
+				const errorText = await response.text();
+				console.error(errorText);
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
 </script>
 
 <article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">
@@ -167,7 +184,8 @@
 		<label for="instructor">Instructor's name (optional)</label>
 		<input id="instructor" type="text" bind:value={instructor} />
 
-		<button type="submit" class="btn" disabled={loading}>{loading ? 'Loading...' : 'Scrape'}</button>
+		<button type="submit" class="btn" disabled={loading}>{loading ? 'Loading...' : 'Scrape'}</button
+		>
 	</form>
 
 	<h4>Exclude video</h4>
@@ -192,6 +210,12 @@
 		<label for="videoId">Video ID (the row in the spreadsheet)</label>
 		<input id="videoId" type="number" bind:value={videoId} />
 
-		<button type="submit" class="btn" disabled={excludeLoading}>{excludeLoading ? 'Loading...' : 'Exclude'}</button>
+		<button type="submit" class="btn" disabled={excludeLoading}
+			>{excludeLoading ? 'Loading...' : 'Exclude'}</button
+		>
 	</form>
+
+	<h4>Scrape Commune</h4>
+	<p>A WIP attempt at scraping the library at Commune's online platform.</p>
+	<button class="btn" on:click={scrapeCommune}>Scrape</button>
 </article>
