@@ -26,7 +26,7 @@
 
 	async function findMeYoga(e) {
 		indexPageStateStore.update(PAGE_STATES.loading);
-		const url = `/.netlify/functions/videos?${e.detail.queryString}&random=true&subscriptions=${subscriptionsQueryParam}`;
+		const url = `/.netlify/functions/videos?${e.detail.queryString}&random=true&subscriptions=${subscriptionsQueryParam}&excluded=true`;
 		const response = await fetch(url);
 		if (response.ok && response.status === 200) {
 			videoData = await response.json();

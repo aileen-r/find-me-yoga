@@ -85,6 +85,7 @@ export const handler = async (event) => {
 							body: JSON.stringify(data)
 						};
 					}
+					// This is a bog-standard getList that isn't currently being used
 					const videos = await getList(sheets, spreadsheetId, auth, 'Videos');
 					return {
 						statusCode: 200,

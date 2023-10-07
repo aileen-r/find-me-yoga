@@ -38,7 +38,7 @@ function formatQueryResponse(response) {
 }
 
 function getWhereConditionFromQueryParameters(params) {
-	const conditions = ['J = FALSE']; // exclude col
+	const conditions = [];
 	if (params.maxDuration) {
 		// formats HH:mm:ss to time in minutes (decimal)
 		conditions.push(`HOUR(C)*60+MINUTE(C)+SECOND(C)/60 <= ${params.maxDuration}`);
@@ -56,15 +56,31 @@ function getWhereConditionFromQueryParameters(params) {
 		.join(" or ");
 		conditions.push(`(${enabledSubscriptionsQuery})`)
 	}
-	return conditions.length ? conditions.join(' And ') : '';
+	if (params.excluded) {
+		conditions.push('J = FALSE');
+	}
+	return conditions.length ? 'Where ' + conditions.join(' And ') : '';
+}
+
+function getPaginationFromQueryParams(params) {
+	if (params.random) {
+		// Since randomisation occurs after receiving spreadsheet results, we need to remove the limit
+		// TODO: look into adding randomiser algorithim at this stage
+		// https://developers.google.com/chart/interactive/docs/querylanguage
+		return '';
+	}
+	const limit = params.limit || 20;
+	const offset = params.offset || 0;
+	return `Limit ${limit} Offset ${offset}`;
 }
 
 async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParameters) {
 	const authHeaders = await auth.getRequestHeaders();
 	const whereCondition = getWhereConditionFromQueryParameters(queryStringParameters);
+	const paginationConditions = getPaginationFromQueryParams(queryStringParameters);
 	const requestQueryParameters = {
 		gid: sheetName,
-		tq: `Select A,B,C,D,E,F,G,H,I,J,K Where ${whereCondition}`
+		tq: `Select A,B,C,D,E,F,G,H,I,J,K ${whereCondition} ${paginationConditions}`
 	};
 	const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq${convertObjectToQueryString(
 		requestQueryParameters
@@ -81,6 +97,7 @@ async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParamet
 		const data = await response.text();
 		// fairly horrendous slicing out of actual JSON from returned string
 		const queryResponse = JSON.parse(data.substring(47).slice(0, -2));
+		console.log(data)
 		return formatQueryResponse(queryResponse);
 	} else {
 		// TODO error 
