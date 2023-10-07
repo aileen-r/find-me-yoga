@@ -24,9 +24,7 @@
 
 <p>At the time of writing there are 27 pages of content in the full library. The scraper accepts one page at a time.</p>
 
-<p>NB: There is no authentication in this scraper so it will likely only be working for me running locally.</p>
-
-<!-- Scraped 20-27 so far -->
+<p>NB: There is no authentication in this scraper so it only works for me when running the project locally. Given the fact that I intend to be the only user who is allowed to write to the DB, this is good enough for me.</p>
 
 <form class="flex flex-col mt-5" on:submit={scrapeCommune}>
   <label for="page">Page number</label>
