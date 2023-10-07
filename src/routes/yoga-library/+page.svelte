@@ -4,9 +4,35 @@
 
 	/** @type {import('./$types').PageData} */ export let data;
 
+	let videos = data.videos;
+	let totalCount = data.totalCount;
+
 	let page = 1;
 	const limit = 21; // default from +page.js
-	const maxPage = Math.ceil(data.totalCount / limit);
+	const maxPage = Math.ceil(totalCount / limit);
+
+	async function changePage(newPage) {
+		const offset = (newPage - 1) * limit;
+		const response = await fetch(`/.netlify/functions/videos?limit=${limit}&offset=${offset}`);
+
+		if (response.ok && response.status === 200) {
+			const body = await response.json();
+			videos = body.videos;
+			totalCount = body.totalCount;
+			page = newPage;
+		} else {
+			const error = await repsonse.text();
+			console.error(error);
+		}
+	}
+
+	async function nextPage() {
+		await changePage(page + 1);
+	}
+
+	async function previousPage() {
+		await changePage(page - 1);
+	}
 </script>
 
 <article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">
@@ -19,7 +45,7 @@
 </article>
 
 <ol class="list-none p-0 mt-12 grid gap-5 grid-cols-3">
-	{#each data.videos as video}
+	{#each videos as video (video.id)}
 		<li class="card text-center">
 			<figure class="relative">
 				<Image src={video.thumbnail} alt={'Thumbnail for ' + video.title} />
@@ -35,11 +61,14 @@
 	{/each}
 </ol>
 
+<!-- TODO: a nicer pagination-->
 <div class="flex justify-center gap-3">
 	{#if page !== 1}
-		<button class="btn btn-secondary px-4">&lt; Previous</button>
+		<button type="button" class="btn btn-secondary px-4" on:click={previousPage}
+			>&lt; Previous</button
+		>
 	{/if}
 	{#if page !== maxPage}
-		<button class="btn btn-secondary px-4">Next &gt;</button>
+		<button type="button" class="btn btn-secondary px-4" on:click={nextPage}>Next &gt;</button>
 	{/if}
 </div>
