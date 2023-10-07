@@ -51,10 +51,10 @@ function getWhereConditionFromQueryParameters(params) {
 	}
 	if (params.subscriptions) {
 		const enabledSubscriptionsQuery = params.subscriptions
-		.split(",")
-		.map(sub => `G = '${sub}'`)
-		.join(" or ");
-		conditions.push(`(${enabledSubscriptionsQuery})`)
+			.split(',')
+			.map((sub) => `G = '${sub}'`)
+			.join(' or ');
+		conditions.push(`(${enabledSubscriptionsQuery})`);
 	}
 	if (params.excluded) {
 		conditions.push('J = FALSE');
@@ -74,35 +74,66 @@ function getPaginationFromQueryParams(params) {
 	return `Limit ${limit} Offset ${offset}`;
 }
 
-async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParameters) {
-	const authHeaders = await auth.getRequestHeaders();
-	const whereCondition = getWhereConditionFromQueryParameters(queryStringParameters);
-	const paginationConditions = getPaginationFromQueryParams(queryStringParameters);
+async function getTotalCount(spreadsheetId, sheetName, tqParam, options) {
 	const requestQueryParameters = {
 		gid: sheetName,
-		tq: `Select A,B,C,D,E,F,G,H,I,J,K ${whereCondition} ${paginationConditions}`
+		tq: tqParam
 	};
 	const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq${convertObjectToQueryString(
 		requestQueryParameters
 	)}`;
 
+	const response = await fetch(url, options);
+	if (response.ok) {
+		const data = await response.text();
+		const queryResponse = JSON.parse(data.substring(47).slice(0, -2))
+		const count = queryResponse?.table?.rows[0]?.c[0]?.v;
+		return count;
+	} else {
+		// TODO error
+		return null;
+	}
+}
 
-	const options = {
-		method: 'GET',
-		headers: authHeaders
+async function getFormattedVideos(spreadsheetId, sheetName, tqParam, options) {
+	const requestQueryParameters = {
+		gid: sheetName,
+		tq: tqParam
 	};
+	const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq${convertObjectToQueryString(
+		requestQueryParameters
+	)}`;
 
 	const response = await fetch(url, options);
 	if (response.ok) {
 		const data = await response.text();
 		// fairly horrendous slicing out of actual JSON from returned string
 		const queryResponse = JSON.parse(data.substring(47).slice(0, -2));
-		console.log(data)
 		return formatQueryResponse(queryResponse);
 	} else {
-		// TODO error 
+		// TODO error
 		return null;
 	}
+}
+
+async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParameters) {
+	const authHeaders = await auth.getRequestHeaders();
+	const whereCondition = getWhereConditionFromQueryParameters(queryStringParameters);
+	const paginationConditions = getPaginationFromQueryParams(queryStringParameters);
+
+	const tqParamCount = `Select Count(A) ${whereCondition}`;
+	const tqParamPaged = `Select A,B,C,D,E,F,G,H,I,J,K ${whereCondition} ${paginationConditions}`;
+
+	const options = {
+		method: 'GET',
+		headers: authHeaders
+	};
+
+	const totalCount = await getTotalCount(spreadsheetId, sheetName, tqParamCount, options);
+
+	const videos = await getFormattedVideos(spreadsheetId, sheetName, tqParamPaged, options);
+
+	return { totalCount, videos}
 }
 
 export default getQueriedList;

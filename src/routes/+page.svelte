@@ -29,7 +29,7 @@
 		const url = `/.netlify/functions/videos?${e.detail.queryString}&random=true&subscriptions=${subscriptionsQueryParam}&excluded=true`;
 		const response = await fetch(url);
 		if (response.ok && response.status === 200) {
-			videoData = await response.json();
+			videoData = (await response.json()).videos;
 			indexPageStateStore.update(PAGE_STATES.video);
 		} else if (response.ok && response.status === 204) {
 			error = 'No videos found.';

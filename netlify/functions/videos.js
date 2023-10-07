@@ -58,17 +58,12 @@ export const handler = async (event) => {
 		switch (event.httpMethod) {
 			case 'GET':
 				if (segments.length === 0) {
-					const videos = await getQueriedList(
+					const {totalCount, videos} = await getQueriedList(
 						spreadsheetId,
 						auth,
 						'Videos',
 						event.queryStringParameters
 					);
-					if (videos.length === 0) {
-						return {
-							statusCode: 204
-						};
-					}
 					let data = videos;
 					if (event.queryStringParameters.random) {
 						const chosenVideos = selectUniqueRandomVideos(videos, 4);
@@ -79,7 +74,10 @@ export const handler = async (event) => {
 					}
 					return {
 						statusCode: 200,
-						body: JSON.stringify(data)
+						body: JSON.stringify({
+							totalCount,
+							videos: data
+						})
 					};
 				}
 				if (segments.length === 1) {

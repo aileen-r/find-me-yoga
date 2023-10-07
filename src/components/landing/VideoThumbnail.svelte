@@ -2,6 +2,7 @@
 	import {createEventDispatcher} from 'svelte';
 	import clickOutside from '../../directives/clickOutside';
 	import Image from '../global/Image.svelte';
+	import DurationPill from '../global/DurationPill.svelte';
 
 	const sizes = Object.freeze({
 		small: 'small',
@@ -15,18 +16,6 @@
 	export let duration;
 	export let size = 'large';
 	let showMenu = false;
-
-	function getDurationPillClass(size) {
-		let pillClass =
-			'absolute bottom-0 right-0 pb-0.5 px-2 bg-zinc-900/80 text-zinc-50 rounded-full';
-		if (size === sizes.small) {
-			pillClass += ' mx-1 my-1 text-xs';
-		}
-		if (size === sizes.large) {
-			pillClass += ' mx-2 my-2';
-		}
-		return pillClass;
-	}
 
 	function getButtonContainerClass(size) {
 		let containerClass = 'absolute top-0 right-0 text-right z-20';
@@ -66,7 +55,6 @@
 		return size === sizes.large ? '9px' : '7px';
 	}
 
-	$: durationPillClass = getDurationPillClass(size);
 	$: buttonContainerClass = getButtonContainerClass(size);
 	$: optionsButtonClass = getOptionsButtonClass(size);
 	$: dotsClass = getDotsClass(size);
@@ -112,7 +100,7 @@
 			</ul>
 		{/if}
 	</div>
-	<span class={durationPillClass}>{duration}</span>
+	<DurationPill duration={duration} size={size} />
 </figure>
 
 <style>
