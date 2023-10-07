@@ -65,7 +65,7 @@ async function getDurationForVideos(youtube, auth, videos) {
 	}));
 }
 
-async function getUploadsByPlaylistId(playlistId, youtube, auth, nextPageToken = null) {
+async function getUploadsByPlaylistId(playlistId, youtube, auth, instructor = '', nextPageToken = null) {
 	const res = await youtube.playlistItems.list({
 		auth,
 		playlistId,
@@ -77,9 +77,10 @@ async function getUploadsByPlaylistId(playlistId, youtube, auth, nextPageToken =
 	let videos = res.data.items.map(item => ({
     title: item?.snippet?.title,
     url: constructUrlFromVideoId(item?.snippet?.resourceId?.videoId),
-    instructor: '',
+    instructor,
     thumbnail: item?.snippet?.thumbnails?.maxres?.url ?? item?.snippet?.thumbnails?.standard?.url ?? item?.snippet?.thumbnails?.high?.url,
-    id: item?.snippet?.resourceId?.videoId
+    id: item?.snippet?.resourceId?.videoId,
+		subscription: 'YouTube'
   }))
 
   videos = (await getDurationForVideos(youtube, auth, videos)).filter(video => video.duration !== 0);
@@ -98,7 +99,7 @@ async function getExistingUrls(sheets, spreadsheetId, auth) {
 }
 
 function formatVideoIntoRowArray(video) {
-	return [video.title, video.url, video.duration, '', '', video.instructor, 'YouTube', '', video.thumbnail];
+	return [video.title, video.url, video.duration, '', '', video.instructor, video.subscription, '', video.thumbnail, 'FALSE', '=ROW()'];
 }
 
 async function addImportedVideosToSheet(sheets, spreadsheetId, auth, videos) {

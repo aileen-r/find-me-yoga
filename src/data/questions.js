@@ -12,12 +12,12 @@ const durationQuestion = {
 			displayText: '< 15 mins',
 			options: [
 				{
-					param: 'maxDuration=5',
-					displayText: '5 mins'
+					param: 'maxDuration=7',
+					displayText: '7 mins'
 				},
 				{
-					param: 'minDuration=5&maxDuration=10',
-					displayText: '10 mins'
+					param: 'minDuration=7&maxDuration=11',
+					displayText: '11 mins'
 				},
 				{
 					param: 'minDuration=10&maxDuration=15',
@@ -58,8 +58,12 @@ const durationQuestion = {
           displayText: '1 hour'
         },
         {
-          param: 'minDuration=60',
-          displayText: 'over 1 hour'
+          param: 'minDuration=60&maxDuration=80',
+          displayText: '1 hour 20 mins'
+        },
+				{
+          param: 'minDuration=80',
+          displayText: 'even more'
         }
       ]
 		}

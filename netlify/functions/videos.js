@@ -4,9 +4,10 @@ import { google } from 'googleapis';
 import getList from './videos/getList';
 import getEntity from './videos/getEntity';
 import getQueriedList from './videos/getQueriedList';
-import {excludeVideo} from './videos/updateEntity';
+import { excludeVideo } from './videos/updateEntity';
 import { selectUniqueRandomVideos } from './videos/selectRandomVideo';
 import { getUploadsByPlaylistId, addImportedVideosToSheet } from './videos/youtubeImport';
+import scrapeCommune from './videos/scrapeCommune';
 
 // required env vars
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
@@ -91,9 +92,10 @@ export const handler = async (event) => {
 					};
 				}
 				if (segments.length === 1) {
-					// TODO: move this to PUT eventually.
+					// TODO: move this to POST eventually.
 					if (segments[0] === 'trigger') {
 						const playlistId = event.queryStringParameters.playlistId;
+						const instructor = event.queryStringParameters.instructor || '';
 
 						if (!playlistId) {
 							throw 'No playlistId parameter provided.';
@@ -104,7 +106,7 @@ export const handler = async (event) => {
 						let videoCount;
 						let nextPageToken;
 
-						const res = await getUploadsByPlaylistId(playlistId, youtube, auth);
+						const res = await getUploadsByPlaylistId(playlistId, youtube, auth, instructor);
 
 						videoCount = res.videos.length;
 						nextPageToken = res.nextPageToken;
@@ -135,11 +137,26 @@ export const handler = async (event) => {
 					return await getEntity(sheets, spreadsheetId, auth, 'Videos', rowId);
 				} else {
 					throw new Error(
-						'too many segments in GET request - you should only call somehting like /.netlify/functions/videos/123456 not /.netlify/functions/videos/123456/789/101112'
+						'too many segments in GET request - you should only call something like /.netlify/functions/videos/123456 not /.netlify/functions/videos/123456/789/101112'
 					);
 				}
-			/* POST /.netlify/functions/google-spreadsheet-fn */
-			// case 'POST':
+			case 'POST':
+				/* POST /.netlify/functions/videos/scrapeCommune */
+				if (segments[0] === 'scrapeCommune') {
+					const page = event.queryStringParameters.page;
+					const videos = await scrapeCommune(page)
+					const response = await addImportedVideosToSheet(
+						sheets,
+						spreadsheetId,
+						auth,
+						videos
+					);
+					return {
+						statusCode: 200,
+						body: JSON.stringify(response)
+					};
+				}
+				throw new Error('Unspecified POST request');
 			//   /* parse the string body into a useable JS object */
 			//   const data = JSON.parse(event.body);
 			//   data.UserIP = UserIP;
@@ -152,7 +169,7 @@ export const handler = async (event) => {
 			//       message: `POST Success - added row ${addedRow._rowNumber - 1}`,
 			//       rowNumber: addedRow._rowNumber - 1 // minus the header row
 			//     })
-			//   };
+			// };
 			// /* PUT /.netlify/functions/videos/123456 */
 			case 'PUT':
 				/* PUT /.netlify/functions/videos */

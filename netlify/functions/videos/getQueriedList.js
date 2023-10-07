@@ -26,7 +26,10 @@ function formatQueryResponse(response) {
 		const formattedRow = {};
 		row.c.forEach((col, i) => {
 			const key = colLabels[i];
-			const value = getValueFromCol(col);
+			let value = getValueFromCol(col);
+			if (key === 'duration' && value.startsWith('00')) {
+				value = value.substring(1);
+			}
 			formattedRow[key] = value;
 		});
 		formattedRows.push(formattedRow);

@@ -1,5 +1,6 @@
 <script>
-	import Alert from '../../components/global/Alert.svelte';
+	import CommuneScraper from '../../components/api-playground/CommuneScraper.svelte';
+import Alert from '../../components/global/Alert.svelte';
 
 	const feedbackTypes = Object.freeze({
 		success: 'success',
@@ -73,7 +74,7 @@
 		try {
 			const response = await fetch(url, {
 				method: 'PUT',
-				headers: { 'Content-Length': '0' },
+				headers: { 'Content-Length': '0' }
 			});
 			if (response.ok && response.status === 204) {
 				excludeFeedbackMsg = `Successfully excluded video ${videoId}.`;
@@ -91,7 +92,7 @@
 			videoId = '';
 			excludeLoading = false;
 		}
-	}	
+	}
 </script>
 
 <article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">
@@ -167,7 +168,8 @@
 		<label for="instructor">Instructor's name (optional)</label>
 		<input id="instructor" type="text" bind:value={instructor} />
 
-		<button type="submit" class="btn" disabled={loading}>{loading ? 'Loading...' : 'Scrape'}</button>
+		<button type="submit" class="btn" disabled={loading}>{loading ? 'Loading...' : 'Scrape'}</button
+		>
 	</form>
 
 	<h4>Exclude video</h4>
@@ -192,6 +194,10 @@
 		<label for="videoId">Video ID (the row in the spreadsheet)</label>
 		<input id="videoId" type="number" bind:value={videoId} />
 
-		<button type="submit" class="btn" disabled={excludeLoading}>{excludeLoading ? 'Loading...' : 'Exclude'}</button>
+		<button type="submit" class="btn" disabled={excludeLoading}
+			>{excludeLoading ? 'Loading...' : 'Exclude'}</button
+		>
 	</form>
+
+	<CommuneScraper />
 </article>
