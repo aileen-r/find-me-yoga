@@ -29,5 +29,5 @@
 <form class="flex flex-col mt-5" on:submit={scrapeCommune}>
   <label for="page">Page number</label>
   <input id="page" type="number" bind:value={page} />
-  <button type="submit" class="btn">Scrape</button>
+  <button type="submit" class="btn btn-primary">Scrape</button>
 </form>

@@ -96,7 +96,7 @@
 		<button
 			disabled={loading}
 			type="submit"
-			class="btn"
+			class="btn btn-primary "
 			>{loading ? 'Loading...' : 'Submit'}</button
 		>
 	</form>

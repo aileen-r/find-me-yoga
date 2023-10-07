@@ -16,6 +16,7 @@ function formatRowsIntoEntities(rows) {
 	return formattedEntites;
 }
 
+// A bog-standard get list that doesn't support querying. Not in use.
 async function getList(sheets, spreadsheetId, auth, sheetName, limit = 20, offset = 0) {
 	const rowOffset = offset + 2; // accounts for 1-indexing of sheet and col 1 being col names
 	const res = await sheets.spreadsheets.values.get({

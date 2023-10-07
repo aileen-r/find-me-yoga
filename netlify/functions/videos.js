@@ -1,7 +1,6 @@
 // https://www.swyx.io/netlify-google-sheets
 import { google } from 'googleapis';
 
-import getList from './videos/getList';
 import getEntity from './videos/getEntity';
 import getQueriedList from './videos/getQueriedList';
 import { excludeVideo } from './videos/updateEntity';
@@ -59,37 +58,28 @@ export const handler = async (event) => {
 		switch (event.httpMethod) {
 			case 'GET':
 				if (segments.length === 0) {
-					if (event.rawQuery) {
-						// We won't have this for long, I'm just trying something new for this.
-						const videos = await getQueriedList(
-							spreadsheetId,
-							auth,
-							'Videos',
-							event.queryStringParameters
-						);
-						if (videos.length === 0) {
-							return {
-								statusCode: 204
-							};
-						}
-						let data = videos;
-						if (event.queryStringParameters.random) {
-							const chosenVideos = selectUniqueRandomVideos(videos, 4);
-							data = {
-								video: chosenVideos[0],
-								others: chosenVideos.slice(1)
-							};
-						}
+					const videos = await getQueriedList(
+						spreadsheetId,
+						auth,
+						'Videos',
+						event.queryStringParameters
+					);
+					if (videos.length === 0) {
 						return {
-							statusCode: 200,
-							body: JSON.stringify(data)
+							statusCode: 204
 						};
 					}
-					// This is a bog-standard getList that isn't currently being used
-					const videos = await getList(sheets, spreadsheetId, auth, 'Videos');
+					let data = videos;
+					if (event.queryStringParameters.random) {
+						const chosenVideos = selectUniqueRandomVideos(videos, 4);
+						data = {
+							video: chosenVideos[0],
+							others: chosenVideos.slice(1)
+						};
+					}
 					return {
 						statusCode: 200,
-						body: JSON.stringify(videos)
+						body: JSON.stringify(data)
 					};
 				}
 				if (segments.length === 1) {
@@ -145,13 +135,8 @@ export const handler = async (event) => {
 				/* POST /.netlify/functions/videos/scrapeCommune */
 				if (segments[0] === 'scrapeCommune') {
 					const page = event.queryStringParameters.page;
-					const videos = await scrapeCommune(page)
-					const response = await addImportedVideosToSheet(
-						sheets,
-						spreadsheetId,
-						auth,
-						videos
-					);
+					const videos = await scrapeCommune(page);
+					const response = await addImportedVideosToSheet(sheets, spreadsheetId, auth, videos);
 					return {
 						statusCode: 200,
 						body: JSON.stringify(response)

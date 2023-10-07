@@ -168,7 +168,7 @@ import Alert from '../../components/global/Alert.svelte';
 		<label for="instructor">Instructor's name (optional)</label>
 		<input id="instructor" type="text" bind:value={instructor} />
 
-		<button type="submit" class="btn" disabled={loading}>{loading ? 'Loading...' : 'Scrape'}</button
+		<button type="submit" class="btn btn-primary" disabled={loading}>{loading ? 'Loading...' : 'Scrape'}</button
 		>
 	</form>
 
@@ -194,7 +194,7 @@ import Alert from '../../components/global/Alert.svelte';
 		<label for="videoId">Video ID (the row in the spreadsheet)</label>
 		<input id="videoId" type="number" bind:value={videoId} />
 
-		<button type="submit" class="btn" disabled={excludeLoading}
+		<button type="submit" class="btn btn-primary" disabled={excludeLoading}
 			>{excludeLoading ? 'Loading...' : 'Exclude'}</button
 		>
 	</form>

@@ -85,8 +85,8 @@
 	{#if activeQuestion > 1}
 	<!-- TODO: sort fly firections -->
 		<div class="mt-40" in:fly|local={{ delay: 600, duration: 600, y: 30 }} out:fly|local={{ duration: 600, y: buttonsOutYCoord }}>
-			<button class="btn" on:click={() => previousQuestion()}>Back</button>
-			<button class="btn" on:click={handleCtaClick} disabled={ctaDisabled}>Find me yoga</button>
+			<button class="btn btn-secondary" on:click={() => previousQuestion()}>Back</button>
+			<button class="btn btn-primary" on:click={handleCtaClick} disabled={ctaDisabled}>Find me yoga</button>
 		</div>
 	{/if}
 </div>

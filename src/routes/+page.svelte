@@ -64,6 +64,6 @@
 	<article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">
 		<h2>Error</h2>
 		<p>{error}</p>
-		<button class="btn" on:click={backToStart} type="button">Back to start</button>
+		<button class="btn-primary" on:click={backToStart} type="button">Back to start</button>
 	</article>
 {/if}
