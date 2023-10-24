@@ -1,6 +1,7 @@
 <script>
 	import DurationPill from '../../components/global/DurationPill.svelte';
 	import Image from '../../components/global/Image.svelte';
+	import VideoThumbnail from '../../components/landing/VideoThumbnail.svelte';
 
 	/** @type {import('./$types').PageData} */ export let data;
 
@@ -20,6 +21,7 @@
 			videos = body.videos;
 			totalCount = body.totalCount;
 			page = newPage;
+			window.scrollTo(0, 0);
 		} else {
 			const error = await repsonse.text();
 			console.error(error);
@@ -47,10 +49,7 @@
 <ol class="list-none p-0 mt-12 grid gap-5 grid-cols-3">
 	{#each videos as video (video.id)}
 		<li class="card text-center">
-			<figure class="relative">
-				<Image src={video.thumbnail} alt={'Thumbnail for ' + video.title} />
-				<DurationPill duration={video.duration} size="small" />
-			</figure>
+			<VideoThumbnail id={video.id} thumbnail={video.thumbnail} title={video.title} subscription={video.subscription} duration={video.duration} size="small" />
 			<a
 				class="card-primary-action underline hover:no-underline"
 				href={video.url}
