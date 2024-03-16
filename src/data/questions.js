@@ -1,3 +1,7 @@
+import energyHighImg from '$lib/energy-high.svg';
+import energyMediumImg from '$lib/energy-medium.svg';
+import energyLowImg from '$lib/energy-low.svg';
+
 const actionTypes = Object.freeze({
 	expandOptions: 'expandOptions',
 	collapseOptions: 'collapseOptions'
@@ -75,15 +79,27 @@ const energyQuestion = {
 	options: [
 		{
 			param: 'energy=high',
-			displayText: 'Lots'
+			displayText: 'Lots',
+			image: {
+				url: energyHighImg,
+				alt: 'A stylised vector of a stick figure in padmasana (lotus pose)'
+			}
 		},
 		{
 			param: 'energy=medium',
-			displayText: 'Some'
+			displayText: 'Some',
+			image: {
+				url: energyMediumImg,
+				alt: 'A stylised vector of a stick figure in adho mukha svanasana (downward facing dog)'
+			}
 		},
 		{
 			param: 'energy=low',
-			displayText: 'Barely any'
+			displayText: 'Barely any',
+			image: {
+				url: energyLowImg,
+				alt: 'A stylised vector of a stick figure in pincha mayurasana (forearm stand)'
+			}
 		}
 	]
 };
