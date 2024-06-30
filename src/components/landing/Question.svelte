@@ -45,7 +45,7 @@
 			value={option}
 			let:checked
 		>
-			<OptionTile {checked} text={option.displayText} />
+			<OptionTile {checked} text={option.displayText} image={option.image} />
 		</RadioGroupOption>
 	{/each}
 </RadioGroup>

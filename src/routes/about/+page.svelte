@@ -12,7 +12,26 @@
 	<h3>Resources used</h3>
 	<ul>
 		<li>
-			<a href="https://www.freepik.com/free-vector/black-white-mandala-design_1100964.htm#query=simple%20mandala%20svg&position=35&from_view=search&track=ais">Mandala by kreativkolors</a> on Freepik
+			<a
+				href="https://www.freepik.com/free-vector/black-white-mandala-design_1100964.htm#query=simple%20mandala%20svg&position=35&from_view=search&track=ais"
+				rel="noopener noreferrer nofollow"
+				target="_blank">Mandala by kreativkolors</a
+			> on Freepik.
+		</li>
+		<li>
+			<a
+				href="https://thenounproject.com/icon/yoga-159842/"
+				rel="noopener noreferrer nofollow"
+				target="_blank">Pincha mayurasana (forearm stand) yoga icon</a> by Claire Jones from Noun Project.
+		</li>
+		<li>
+			<a
+				href="https://thenounproject.com/icon/yoga-1584208/"
+				rel="noopener noreferrer nofollow"
+				target="_blank">Adho mukha svanasana (downward facing dog) yoga icon</a> and <a
+				href="https://thenounproject.com/icon/yoga-1584208/"
+				rel="noopener noreferrer nofollow"
+				target="_blank">Padmasana (lotus pose) yoga icon</a> by corpus delicti from Noun Project.
 		</li>
 	</ul>
 </article>
