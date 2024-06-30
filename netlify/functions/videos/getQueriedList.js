@@ -27,7 +27,7 @@ function formatQueryResponse(response) {
 		row.c.forEach((col, i) => {
 			const key = colLabels[i];
 			let value = getValueFromCol(col);
-			if (key === 'duration' && value.startsWith('00')) {
+			if (key === 'duration' && value?.startsWith('00')) {
 				value = value.substring(1);
 			}
 			formattedRow[key] = value;

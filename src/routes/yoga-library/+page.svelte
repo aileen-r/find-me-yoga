@@ -1,6 +1,4 @@
 <script>
-	import DurationPill from '../../components/global/DurationPill.svelte';
-	import Image from '../../components/global/Image.svelte';
 	import VideoThumbnail from '../../components/landing/VideoThumbnail.svelte';
 
 	/** @type {import('./$types').PageData} */ export let data;
@@ -27,14 +25,6 @@
 			console.error(error);
 		}
 	}
-
-	async function nextPage() {
-		await changePage(page + 1);
-	}
-
-	async function previousPage() {
-		await changePage(page - 1);
-	}
 </script>
 
 <article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">
@@ -49,7 +39,14 @@
 <ol class="list-none p-0 mt-12 grid gap-5 grid-cols-3">
 	{#each videos as video (video.id)}
 		<li class="card text-center">
-			<VideoThumbnail id={video.id} thumbnail={video.thumbnail} title={video.title} subscription={video.subscription} duration={video.duration} size="small" />
+			<VideoThumbnail
+				id={video.id}
+				thumbnail={video.thumbnail}
+				title={video.title}
+				subscription={video.subscription}
+				duration={video.duration}
+				size="small"
+			/>
 			<a
 				class="card-primary-action underline hover:no-underline"
 				href={video.url}
@@ -61,13 +58,27 @@
 </ol>
 
 <!-- TODO: a nicer pagination-->
-<div class="flex justify-center gap-3">
+<nav class="flex items-center justify-center gap-3">
 	{#if page !== 1}
-		<button type="button" class="btn btn-secondary px-4" on:click={previousPage}
-			>&lt; Previous</button
-		>
+		<button type="button" class="btn btn-secondary px-4" on:click={() => changePage(1)}>1</button>
+	{/if}
+	{#if page > 2}
+	...
+	{/if}
+	{#if page > 2}
+	<button type="button" class="btn btn-secondary px-4" on:click={() => changePage(page - 1)}>{page - 1}</button>
+	{/if}
+	<button type="button" class="btn btn-secondary px-4" disabled>{page}</button>
+	{#if page < maxPage - 1}
+	<button type="button" class="btn btn-secondary px-4" on:click={() => changePage(page + 1)}>{page + 1}</button>
+	{/if}
+	{#if page < maxPage - 1}
+	...
 	{/if}
 	{#if page !== maxPage}
-		<button type="button" class="btn btn-secondary px-4" on:click={nextPage}>Next &gt;</button>
+
+		<button type="button" class="btn btn-secondary px-4" on:click={() => changePage(maxPage)}
+			>{maxPage}</button
+		>
 	{/if}
-</div>
+</nav>
