@@ -4,10 +4,10 @@
 	/** @type {import('./$types').PageData} */ export let data;
 
 	let videos = data.videos;
-	let totalCount = data.totalCount;
+	let totalCount = Number(data.totalCount);
+	let page = Number(data.page);
+	const limit = Number(data.limit);
 
-	let page = 1;
-	const limit = 21; // default from +page.js
 	const maxPage = Math.ceil(totalCount / limit);
 
 	async function changePage(newPage) {
