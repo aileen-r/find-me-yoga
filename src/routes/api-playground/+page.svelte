@@ -155,6 +155,29 @@ import Alert from '../../components/global/Alert.svelte';
 		>. The user's uploads playlist ID starts with <code>UU</code> instead of <code>UC</code>, e.g.
 		<code>UUFKE7WVJfvaHW5q283SxchA</code>.
 	</p>
+	<p>Some user uploads playlist IDs:</p>
+	<table>
+		<thead>
+			<tr>
+				<th>YouTube Channel</th>
+				<th>Uploads Playlist ID</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><a href="https://www.youtube.com/channel/UCFKE7WVJfvaHW5q283SxchA" target="_blank" rel="noopener noreferrer nofollow">Yoga with Adriene</a></td>
+				<td><code>UUFKE7WVJfvaHW5q283SxchA</code></td>
+			</tr>
+			<tr>
+				<td><a href="https://www.youtube.com/channel/UC5HdAapbvqWN65GIqpWWL3Q" target="_blank" rel="noopener noreferrer nofollow">Charlie Follows</a></td>
+				<td><code>UU5HdAapbvqWN65GIqpWWL3Q</code></td>
+			</tr>
+			<tr>
+				<td><a href="https://www.youtube.com/channel/UCJ59wmJwIa-XQsd8qIcYtgg" target="_blank" rel="noopener noreferrer nofollow">Patrick Beach</a></td>
+				<td><code>UUJ59wmJwIa-XQsd8qIcYtgg</code></td>
+			</tr>
+		</tbody>
+	</table>
 	<p>NB: There's no frontend validation on this form.</p>
 
 	{#if feedbackMsg}
