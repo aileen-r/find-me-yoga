@@ -75,7 +75,7 @@
 		This is my full library of yoga videos. In time it will have CRUD actions exposed in the UI (but
 		only for me - I don't want anyone else messing with my data!)
 	</p>
-	<p>While I have made a start on filtering, there is no sorting yet.</p>
+	<p>While I have implemented filtering, there is no sorting yet.</p>
 	<button type="button" class="btn btn-secondary px-4" on:click={toggleFiltersExpanded}
 		>Filters {filtersExpanded ? '-' : '+'}</button
 	>
