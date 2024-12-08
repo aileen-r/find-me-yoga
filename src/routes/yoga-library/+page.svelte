@@ -1,28 +1,45 @@
 <script>
+	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
+	import { page as pageStore } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import VideoThumbnail from '../../components/landing/VideoThumbnail.svelte';
 
 	/** @type {import('./$types').PageData} */ export let data;
 
-	let videos = data.videos;
-	let totalCount = Number(data.totalCount);
-	let page = Number(data.page);
-	const limit = Number(data.limit);
+	$: videos = data.videos;
+	$: totalCount = Number(data.totalCount);
+	$: page = Number(data.page);
+	$: limit = Number(data.limit);
+	$: filterForm = data.filterForm;
 
-	// TODO: update query params
+	let url;
+	pageStore.subscribe((value) => {
+		url = value.url;
+	});
 
 	$: maxPage = Math.ceil(totalCount / limit);
 
 	let filtersExpanded = false;
 
-	// Form values
+	// Initialise form values
 	let minDuration, maxDuration, energy;
+	onMount(() => {
+    minDuration = filterForm.minDuration;
+		maxDuration = filterForm.maxDuration;
+		energy = filterForm.energy;
+  });
 
 	function toggleFiltersExpanded() {
 		filtersExpanded = !filtersExpanded;
 	}
 
-	function constructFilterParams() {
-		const queryParams = [];
+	/**
+	 * @param {string} page
+	 * @returns {string} Query string for the frontend
+	 */
+	function constructQuery(page) {
+		const queryParams = [`page=${page}`];
 		if (minDuration && minDuration > 0) {
 			queryParams.push(`minDuration=${minDuration}`);
 		}
@@ -32,34 +49,21 @@
 		if (energy) {
 			queryParams.push(`energy=${energy}`);
 		}
-		return queryParams.join('&')
+		return queryParams.join('&');
 	}
 
 	async function changePage(newPage) {
-		await loadNewQuery(newPage);
+		await updateQueryParams(newPage);
 	}
 
-	async function loadNewQuery(newPage) {
-		const offset = (newPage - 1) * limit;
-		const response = await fetch(`/.netlify/functions/videos?limit=${limit}&offset=${offset}&${constructFilterParams()}`);
-
-		if (response.ok && response.status === 200) {
-			const body = await response.json();
-			videos = body.videos;
-			totalCount = body.totalCount;
-			page = newPage;
-			window.scrollTo(0, 0);
-		} else {
-			const error = await response.text();
-			console.error(error);
-		}
+	function updateQueryParams(newPage) {
+		const params = constructQuery(newPage);
+		goto(`?${params.toString()}`);
 	}
 
 	async function filterSubmit(event) {
 		event.preventDefault();
-
-		await loadNewQuery(1);
-
+		await updateQueryParams(1);
 		filtersExpanded = false;
 	}
 </script>
