@@ -75,7 +75,7 @@ const durationQuestion = {
 };
 const energyQuestion = {
 	id: 2,
-	question: 'How much energy do you have?',
+	question: 'How much energy do you have? (optional)',
 	options: [
 		{
 			param: 'energy=high',

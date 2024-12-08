@@ -27,7 +27,7 @@ function formatQueryResponse(response) {
 		row.c.forEach((col, i) => {
 			const key = colLabels[i];
 			let value = getValueFromCol(col);
-			if (key === 'duration' && value.startsWith('00')) {
+			if (key === 'duration' && value?.startsWith('00')) {
 				value = value.substring(1);
 			}
 			formattedRow[key] = value;
@@ -38,7 +38,7 @@ function formatQueryResponse(response) {
 }
 
 function getWhereConditionFromQueryParameters(params) {
-	const conditions = ['J = FALSE']; // exclude col
+	const conditions = [];
 	if (params.maxDuration) {
 		// formats HH:mm:ss to time in minutes (decimal)
 		conditions.push(`HOUR(C)*60+MINUTE(C)+SECOND(C)/60 <= ${params.maxDuration}`);
@@ -51,30 +51,58 @@ function getWhereConditionFromQueryParameters(params) {
 	}
 	if (params.subscriptions) {
 		const enabledSubscriptionsQuery = params.subscriptions
-		.split(",")
-		.map(sub => `G = '${sub}'`)
-		.join(" or ");
-		conditions.push(`(${enabledSubscriptionsQuery})`)
+			.split(',')
+			.map((sub) => `G = '${sub}'`)
+			.join(' or ');
+		conditions.push(`(${enabledSubscriptionsQuery})`);
 	}
-	return conditions.length ? conditions.join(' And ') : '';
+	if (params.excluded) {
+		conditions.push('J = FALSE');
+	}
+	return conditions.length ? 'Where ' + conditions.join(' And ') : '';
 }
 
-async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParameters) {
-	const authHeaders = await auth.getRequestHeaders();
-	const whereCondition = getWhereConditionFromQueryParameters(queryStringParameters);
+function getPaginationFromQueryParams(params) {
+	if (params.random) {
+		// Since randomisation occurs after receiving spreadsheet results, we need to remove the limit
+		// TODO: look into adding randomiser algorithim at this stage
+		// https://developers.google.com/chart/interactive/docs/querylanguage
+		return '';
+	}
+	const limit = params.limit || 20;
+	const offset = params.offset || 0;
+	return `Limit ${limit} Offset ${offset}`;
+}
+
+async function getTotalCount(spreadsheetId, sheetName, tqParam, options) {
 	const requestQueryParameters = {
 		gid: sheetName,
-		tq: `Select A,B,C,D,E,F,G,H,I,J,K Where ${whereCondition}`
+		tq: tqParam
 	};
 	const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq${convertObjectToQueryString(
 		requestQueryParameters
 	)}`;
 
+	const response = await fetch(url, options);
+	if (response.ok) {
+		const data = await response.text();
+		const queryResponse = JSON.parse(data.substring(47).slice(0, -2))
+		const count = queryResponse?.table?.rows[0]?.c[0]?.v;
+		return count;
+	} else {
+		// TODO error
+		return null;
+	}
+}
 
-	const options = {
-		method: 'GET',
-		headers: authHeaders
+async function getFormattedVideos(spreadsheetId, sheetName, tqParam, options) {
+	const requestQueryParameters = {
+		gid: sheetName,
+		tq: tqParam
 	};
+	const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq${convertObjectToQueryString(
+		requestQueryParameters
+	)}`;
 
 	const response = await fetch(url, options);
 	if (response.ok) {
@@ -83,9 +111,29 @@ async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParamet
 		const queryResponse = JSON.parse(data.substring(47).slice(0, -2));
 		return formatQueryResponse(queryResponse);
 	} else {
-		// TODO error 
+		// TODO error
 		return null;
 	}
+}
+
+async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParameters) {
+	const authHeaders = await auth.getRequestHeaders();
+	const whereCondition = getWhereConditionFromQueryParameters(queryStringParameters);
+	const paginationConditions = getPaginationFromQueryParams(queryStringParameters);
+
+	const tqParamCount = `Select Count(A) ${whereCondition}`;
+	const tqParamPaged = `Select A,B,C,D,E,F,G,H,I,J,K ${whereCondition} ${paginationConditions}`;
+
+	const options = {
+		method: 'GET',
+		headers: authHeaders
+	};
+
+	const totalCount = await getTotalCount(spreadsheetId, sheetName, tqParamCount, options);
+
+	const videos = await getFormattedVideos(spreadsheetId, sheetName, tqParamPaged, options);
+
+	return { totalCount, videos}
 }
 
 export default getQueriedList;

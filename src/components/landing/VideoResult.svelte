@@ -101,5 +101,5 @@
 			{/each}
 		</div>
 	{/if}
-	<button class="btn" on:click={backToStart} type="button">Back to start</button>
+	<button class="btn btn-secondary" on:click={backToStart} type="button">Back to start</button>
 </article>

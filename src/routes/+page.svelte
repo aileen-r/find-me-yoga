@@ -26,10 +26,10 @@
 
 	async function findMeYoga(e) {
 		indexPageStateStore.update(PAGE_STATES.loading);
-		const url = `/.netlify/functions/videos?${e.detail.queryString}&random=true&subscriptions=${subscriptionsQueryParam}`;
+		const url = `/.netlify/functions/videos?${e.detail.queryString}&random=true&subscriptions=${subscriptionsQueryParam}&excluded=true`;
 		const response = await fetch(url);
 		if (response.ok && response.status === 200) {
-			videoData = await response.json();
+			videoData = (await response.json()).videos;
 			indexPageStateStore.update(PAGE_STATES.video);
 		} else if (response.ok && response.status === 204) {
 			error = 'No videos found.';
@@ -64,6 +64,6 @@
 	<article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">
 		<h2>Error</h2>
 		<p>{error}</p>
-		<button class="btn" on:click={backToStart} type="button">Back to start</button>
+		<button class="btn-primary" on:click={backToStart} type="button">Back to start</button>
 	</article>
 {/if}

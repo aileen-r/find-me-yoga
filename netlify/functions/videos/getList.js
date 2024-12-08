@@ -1,29 +1,28 @@
-import { formatRowIntoEntity } from "./sheetsApiHelpers";
+import { formatRowIntoEntity } from './sheetsApiHelpers';
+
+const colNames = ['title', 'url', 'duration', 'style', 'bodyArea', 'instructor', 'subscription', 'energy', 'thumbnail', 'exclude', 'id'];
 
 // TODO: JsDoc
 function formatRowsIntoEntities(rows) {
 	const formattedEntites = [];
-	if (!rows || rows.length < 2) {
+	if (!rows) {
 		return [];
 	}
 
-	rows.forEach((row, idx) => {
-		// First row is property name
-		if (idx === 0) {
-			return;
-		}
-		const entity = formatRowIntoEntity(row, rows[0]);
+	rows.forEach((row) => {
+		const entity = formatRowIntoEntity(row, colNames);
 		formattedEntites.push(entity);
 	});
 	return formattedEntites;
 }
 
-async function getList(sheets, spreadsheetId, auth, sheetName) {
-	// TODO: add limit + offset for pagination
+// A bog-standard get list that doesn't support querying. Not in use.
+async function getList(sheets, spreadsheetId, auth, sheetName, limit = 20, offset = 0) {
+	const rowOffset = offset + 2; // accounts for 1-indexing of sheet and col 1 being col names
 	const res = await sheets.spreadsheets.values.get({
 		spreadsheetId,
 		auth,
-		range: sheetName
+		range: `${sheetName}!A${rowOffset}:K${rowOffset + limit}`
 	});
 	const entities = formatRowsIntoEntities(res.data.values);
 	return entities;
