@@ -15,8 +15,8 @@
 	{#key data.url.pathname}
 		<main
 			class="flex flex-col mt-6 mx-auto flex-1 max-w-4xl px-4 py-2.5 w-full relative"
-			in:fade|local={{duration: 300, delay: 301}}
-			out:fade|local={{duration: 300}}
+			in:fade={{duration: 300, delay: 301}}
+			out:fade={{duration: 300}}
 		>
 			<slot />
 		</main>
