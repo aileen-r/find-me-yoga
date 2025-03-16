@@ -48,3 +48,8 @@ body {
   content: '';
   @apply absolute inset-0 z-10 focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-400 focus-visible:ring-offset-1 focus-visible:rounded-sm;
 }
+
+/* Show value popover in range slider when not focussed */
+.rangeSlider .rangeFloat {
+  opacity: 1 !important;
+}
