@@ -7,7 +7,7 @@
 	function onDurationChange(e) {
 		dispatch('option-selected', {
       id: 1, // TODO: magic
-			param: values[0]
+			param: `maxDuration=${values[0]}`
 		});
 	}
 

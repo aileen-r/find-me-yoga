@@ -48,6 +48,7 @@
 			return;
 		}
 		queryParamsByQuestionId = queryParamsByQuestionId.set(e.detail.id, e.detail.param);
+		// will need if I add a third question
 		// nextQuestion();
 	}
 
@@ -82,10 +83,14 @@
 			>
 		</div>
 	{:else}
+	<div class="absolute w-full -mt-24"
+			in:fly|local={{ delay: 600, duration: 600, y: 30 }}
+			out:fly|local={{ duration: 600, y: buttonsOutYCoord }}
+		>
 		{#each questions as question}
 			{#if activeQuestion === question.id}
 				<div
-					class="absolute text-center w-full -mt-24"
+					class="text-center"
 					in:fly|local={{
 						delay: question.id > 1 || direction === directions.back ? 600 : 0,
 						duration: 600,
@@ -102,6 +107,7 @@
 				</div>
 			{/if}
 		{/each}
+		</div>
 	{/if}
 	{#if activeQuestion > 1}
 		<!-- TODO: sort fly firections -->
