@@ -105,4 +105,4 @@ const energyQuestion = {
 };
 
 export default [durationQuestion, energyQuestion];
-export {actionTypes}
+export {actionTypes, durationQuestion}
