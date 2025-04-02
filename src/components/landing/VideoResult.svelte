@@ -44,6 +44,7 @@
 </script>
 
 <article class="text-center">
+	{#if video.id}
 	<div class="card" class:opacity-40={video.excluded} class:grayscale={video.excluded}>
 		<h2 class="underline-hover-inverted w-max text-2xl font-bold mx-auto mb-3 pb-2">
 			{#if video.excluded}
@@ -66,6 +67,9 @@
 			on:exclude-video={excludeVideo}
 		/>
 	</div>
+	{:else}
+		<p>No results found.</p>
+	{/if}
 
 	{#if others.length}
 		<h3 class="text-xl mt-8 mb-3 text-left">Or, you could try...</h3>
