@@ -7,11 +7,11 @@
 	function onDurationChange(e) {
 		dispatch('option-selected', {
       id: 1, // TODO: magic
-			param: `maxDuration=${values[0]}`
+			param: `minDuration=${values[0]}&maxDuration=${values[1]}`
 		});
 	}
 
-	let values = [20];
+	let values = [20, 30];
 </script>
 
 <RangeSlider
@@ -19,6 +19,8 @@
 	pips
 	pipstep={10}
 	all="label"
+	range
+	pushy
 	bind:values
 	min={0}
 	max={120}
