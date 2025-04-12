@@ -122,12 +122,14 @@ async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParamet
 	const paginationConditions = getPaginationFromQueryParams(queryStringParameters);
 
 	const tqParamCount = `Select Count(A) ${whereCondition}`;
+	
 	const tqParamPaged = `Select A,B,C,D,E,F,G,H,I,J,K ${whereCondition} ${paginationConditions}`;
 
 	const options = {
 		method: 'GET',
 		headers: authHeaders
 	};
+
 
 	const totalCount = await getTotalCount(spreadsheetId, sheetName, tqParamCount, options);
 

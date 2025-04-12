@@ -34,6 +34,16 @@ function getAuth() {
 	return auth;
 }
 
+async function getRecentlyAdded(spreadsheetId, auth, count = 3) {
+	const {videos} = await getQueriedList(
+		spreadsheetId,
+		auth,
+		'Videos',
+		{random: true}
+	);
+	return videos.slice(-count);
+}
+ 
 /*
  * ok real work
  *
@@ -69,7 +79,7 @@ export const handler = async (event) => {
 						const chosenVideos = selectUniqueRandomVideos(videos, 4);
 						data = {
 							video: chosenVideos[0],
-							others: chosenVideos.slice(1)
+							others: chosenVideos.length ? chosenVideos.slice(1) : await getRecentlyAdded(spreadsheetId, auth)
 						};
 					}
 					return {
