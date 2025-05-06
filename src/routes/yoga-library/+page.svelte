@@ -23,8 +23,9 @@
 	let filtersExpanded = false;
 
 	// Initialise form values
-	let minDuration, maxDuration, energy, showExcluded;
+	let text, minDuration, maxDuration, energy, showExcluded;
 	onMount(() => {
+		text = filterForm.text;
     minDuration = filterForm.minDuration;
 		maxDuration = filterForm.maxDuration;
 		energy = filterForm.energy;
@@ -41,6 +42,9 @@
 	 */
 	function constructQuery(page) {
 		const queryParams = [`page=${page}`];
+		if (text) {
+			queryParams.push(`text=${text}`);
+		}
 		if (minDuration && minDuration > 0) {
 			queryParams.push(`minDuration=${minDuration}`);
 		}
@@ -87,6 +91,9 @@
 
 {#if filtersExpanded}
 	<form class="flex flex-col" on:submit={filterSubmit}>
+		<label for="text">Search for text</label>
+		<input type="text" id="text" bind:value={text} />
+
 		<label for="minDuration">Minimum duration (minutes)</label>
 		<input type="number" id="minDuration" bind:value={minDuration} />
 
@@ -102,7 +109,7 @@
 		</select>
 
 		<label for="excluded">Show excluded videos?</label>
-		<input id="excluded" type="checkbox" bind:checked={showExcluded}>
+		<input id="excluded" type="checkbox" bind:checked={showExcluded} />
 
 		<button type="submit" class="btn btn-secondary px-4">Apply filters</button>
 	</form>

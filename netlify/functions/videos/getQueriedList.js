@@ -39,6 +39,10 @@ function formatQueryResponse(response) {
 
 function getWhereConditionFromQueryParameters(params) {
 	const conditions = [];
+	if (params.text) {
+		// This only returns matches within the title column
+		conditions.push(`LOWER(A) contains '${params.text.toLowerCase()}'`);
+	}
 	if (params.maxDuration) {
 		// formats HH:mm:ss to time in minutes (decimal)
 		conditions.push(`HOUR(C)*60+MINUTE(C)+SECOND(C)/60 <= ${params.maxDuration}`);
