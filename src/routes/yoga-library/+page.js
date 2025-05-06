@@ -5,9 +5,10 @@ export async function load({ url, fetch }) {
 	const minDuration = url.searchParams.get('minDuration');
 	const maxDuration = url.searchParams.get('maxDuration');
 	const energy = url.searchParams.get('energy');
+	const showExcluded = url.searchParams.get('showExcluded');
 
 	const offset = (page - 1) * limit;
-	const queryString = constructQuery(limit, offset, minDuration, maxDuration, energy);
+	const queryString = constructQuery(limit, offset, minDuration, maxDuration, energy, showExcluded);
 
 	const res = await fetch(`/.netlify/functions/videos?${queryString}`);
 	const data = await res.json();
@@ -17,7 +18,8 @@ export async function load({ url, fetch }) {
   data.filterForm = {
     minDuration,
     maxDuration,
-    energy
+    energy,
+		showExcluded
   }
 
 	return data;
@@ -30,9 +32,10 @@ export async function load({ url, fetch }) {
  * @param {string} minDuration
  * @param {string} maxDuration
  * @param {string} energy
+ * @param {string} showExcluded
  * @returns {string}
  */
-function constructQuery(limit, offset, minDuration, maxDuration, energy) {
+function constructQuery(limit, offset, minDuration, maxDuration, energy, showExcluded) {
 	if (!limit) {
 		console.error("Yoga library: 'limit' query param is not defined");
 	}
@@ -49,6 +52,9 @@ function constructQuery(limit, offset, minDuration, maxDuration, energy) {
 	}
 	if (energy) {
 		queryParams.push(`energy=${energy}`);
+	}
+	if (!showExcluded) {
+		queryParams.push(`excluded=true`)
 	}
 	return queryParams.join('&');
 }

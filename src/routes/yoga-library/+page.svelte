@@ -23,11 +23,12 @@
 	let filtersExpanded = false;
 
 	// Initialise form values
-	let minDuration, maxDuration, energy;
+	let minDuration, maxDuration, energy, showExcluded;
 	onMount(() => {
     minDuration = filterForm.minDuration;
 		maxDuration = filterForm.maxDuration;
 		energy = filterForm.energy;
+		showExcluded = filterForm.showExcluded;
   });
 
 	function toggleFiltersExpanded() {
@@ -48,6 +49,9 @@
 		}
 		if (energy) {
 			queryParams.push(`energy=${energy}`);
+		}
+		if (showExcluded) {
+			queryParams.push(`showExcluded=${showExcluded}`);
 		}
 		return queryParams.join('&');
 	}
@@ -96,6 +100,9 @@
 			<option value="medium">Medium</option>
 			<option value="high">High</option>
 		</select>
+
+		<label for="excluded">Show excluded videos?</label>
+		<input id="excluded" type="checkbox" bind:checked={showExcluded}>
 
 		<button type="submit" class="btn btn-secondary px-4">Apply filters</button>
 	</form>
