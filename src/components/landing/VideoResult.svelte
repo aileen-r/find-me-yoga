@@ -64,6 +64,7 @@
 			title={video.title}
 			subscription={video.subscription}
 			duration={video.duration}
+			complete={video.complete}
 			on:exclude-video={excludeVideo}
 		/>
 	</div>
@@ -86,6 +87,7 @@
 						title={otherVideo.title}
 						subscription={otherVideo.subscription}
 						duration={otherVideo.duration}
+						complete={video.complete}
 						size="small"
 						on:exclude-video={excludeVideo}
 					/>

@@ -37,6 +37,7 @@
 	"type": "module",
 	"dependencies": {
 		"googleapis": "^111.0.0",
+		"netlify-cli": "^23.1.4",
 		"puppeteer": "^21.3.8"
 	}
 }

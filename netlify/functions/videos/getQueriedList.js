@@ -24,6 +24,7 @@ function formatQueryResponse(response) {
 	const formattedRows = [];
 	response.table.rows.forEach((row) => {
 		const formattedRow = {};
+		let hasNullVal = false;
 		row.c.forEach((col, i) => {
 			const key = colLabels[i];
 			let value = getValueFromCol(col);
@@ -31,7 +32,11 @@ function formatQueryResponse(response) {
 				value = value.substring(1);
 			}
 			formattedRow[key] = value;
+			if (!hasNullVal && value === null) {
+				hasNullVal = true;
+			}
 		});
+		formattedRow.complete = !hasNullVal;
 		formattedRows.push(formattedRow);
 	});
 	return formattedRows;

@@ -124,6 +124,7 @@
 				title={video.title}
 				subscription={video.subscription}
 				duration={video.duration}
+				complete={video.complete}
 				size="small"
 			/>
 			<a

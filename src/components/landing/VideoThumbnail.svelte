@@ -1,5 +1,5 @@
 <script>
-	import {createEventDispatcher} from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	import clickOutside from '../../directives/clickOutside';
 	import Image from '../global/Image.svelte';
 	import DurationPill from '../global/DurationPill.svelte';
@@ -15,10 +15,11 @@
 	export let subscription;
 	export let duration;
 	export let size = 'large';
+	export let complete = false;
 	let showMenu = false;
 
 	function getButtonContainerClass(size) {
-		let containerClass = 'absolute top-0 right-0 text-right z-20';
+		let containerClass = 'absolute top-0 right-0 text-right z-20 flex';
 		if (size === sizes.small) {
 			containerClass += ' mx-2 my-1';
 		}
@@ -68,10 +69,10 @@
 		showMenu = false;
 	}
 
-	const dispatch = createEventDispatcher()
+	const dispatch = createEventDispatcher();
 
-  function excludeVideo() {
-    dispatch('exclude-video', {id});
+	function excludeVideo() {
+		dispatch('exclude-video', { id });
 	}
 </script>
 
@@ -82,7 +83,9 @@
 		alt={`Thumbnail for video ${title} on ${subscription}.`}
 	/>
 	<div class={buttonContainerClass}>
-		<button type="button" class={optionsButtonClass} 
+		<button
+			type="button"
+			class={optionsButtonClass}
 			use:clickOutside={hideMenu}
 			on:click={toggleMenu}
 			><span class={dotsClass}
@@ -95,12 +98,17 @@
 				style="--arrow-offset: {arrowOffset}"
 			>
 				<li>
-					<button type="button" class="px-3 py-1 hover:bg-zinc-200" on:click={excludeVideo}>Exclude video</button>
+					<button type="button" class="px-3 py-1 hover:bg-zinc-200" on:click={excludeVideo}
+						>Exclude video</button
+					>
 				</li>
 			</ul>
 		{/if}
 	</div>
-	<DurationPill duration={duration} size={size} />
+	{#if complete}
+		<DurationPill duration="✓" {size} left />
+	{/if}
+	<DurationPill {duration} {size} />
 </figure>
 
 <style>
