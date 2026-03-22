@@ -24,7 +24,6 @@ function formatQueryResponse(response) {
 	const formattedRows = [];
 	response.table.rows.forEach((row) => {
 		const formattedRow = {};
-		let hasNullVal = false;
 		row.c.forEach((col, i) => {
 			const key = colLabels[i];
 			let value = getValueFromCol(col);
@@ -32,11 +31,7 @@ function formatQueryResponse(response) {
 				value = value.substring(1);
 			}
 			formattedRow[key] = value;
-			if (!hasNullVal && value === null) {
-				hasNullVal = true;
-			}
 		});
-		formattedRow.complete = !hasNullVal;
 		formattedRows.push(formattedRow);
 	});
 	return formattedRows;
@@ -58,15 +53,22 @@ function getWhereConditionFromQueryParameters(params) {
 	if (params.energy && ENERGY_VALUES.includes(params.energy.toLowerCase())) {
 		conditions.push(`H = '${params.energy}'`);
 	}
+	if (params.instructor) {
+		conditions.push(`F = '${params.instructor}'`);
+	}
 	if (params.subscriptions) {
 		const enabledSubscriptionsQuery = params.subscriptions
 			.split(',')
 			.map((sub) => `G = '${sub}'`)
 			.join(' or ');
 		conditions.push(`(${enabledSubscriptionsQuery})`);
-	}
+	};
 	if (params.excluded) {
 		conditions.push('J = FALSE');
+	}
+	if (params.complete !== undefined || params.complete !== null) {
+		const boolString = params.complete.toUpperCase();
+		conditions.push(`M = ${boolString}`);
 	}
 	return conditions.length ? 'Where ' + conditions.join(' And ') : '';
 }
@@ -132,7 +134,7 @@ async function getQueriedList(spreadsheetId, auth, sheetName, queryStringParamet
 
 	const tqParamCount = `Select Count(A) ${whereCondition}`;
 	
-	const tqParamPaged = `Select A,B,C,D,E,F,G,H,I,J,K ${whereCondition} ${paginationConditions}`;
+	const tqParamPaged = `Select A,B,C,D,E,F,G,H,I,J,K,L,M ${whereCondition} ${paginationConditions}`;
 
 	const options = {
 		method: 'GET',

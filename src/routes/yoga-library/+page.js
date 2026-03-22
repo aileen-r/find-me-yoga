@@ -7,10 +7,22 @@ export async function load({ url, fetch }) {
 	const maxDuration = url.searchParams.get('maxDuration');
 	const energy = url.searchParams.get('energy');
 	const showExcluded = url.searchParams.get('showExcluded');
-	const complete = url.searchParams.get('complete');
+	const instructor = url.searchParams.get('instructor');
+	const subscription = url.searchParams.get('subscription');
+	let complete = url.searchParams.get('complete');
+	switch (complete) {
+		case 'true':
+			complete = true;
+			break;
+		case 'false':
+			complete = false;
+			break;
+		default:
+			complete = null;
+	}
 
 	const offset = (page - 1) * limit;
-	const queryString = constructQuery(limit, offset, text, minDuration, maxDuration, energy, showExcluded, complete);
+	const queryString = constructQuery(limit, offset, text, minDuration, maxDuration, energy, showExcluded, complete, instructor, subscription);
 
 	const res = await fetch(`/.netlify/functions/videos?${queryString}`);
 	const data = await res.json();
@@ -23,7 +35,9 @@ export async function load({ url, fetch }) {
     maxDuration,
     energy,
 		showExcluded,
-		complete
+		complete,
+		instructor,
+		subscription
   }
 
 	return data;
@@ -39,9 +53,11 @@ export async function load({ url, fetch }) {
  * @param {string} energy
  * @param {string} showExcluded
  * @param {string} complete
+ * @param {string} instructor
+ * @param {string} subscription
  * @returns {string}
  */
-function constructQuery(limit, offset, text, minDuration, maxDuration, energy, showExcluded, complete) {
+function constructQuery(limit, offset, text, minDuration, maxDuration, energy, showExcluded, complete, instructor, subscription) {
 	if (!limit) {
 		console.error("Yoga library: 'limit' query param is not defined");
 	}
@@ -67,6 +83,12 @@ function constructQuery(limit, offset, text, minDuration, maxDuration, energy, s
 	}
 	if (complete !== undefined || complete !== null) {
 		queryParams.push(`complete=${complete}`);
+	}
+	if (instructor) {
+		queryParams.push(`instructor=${instructor}`);
+	}
+	if (subscription) {
+		queryParams.push(`subscription=${subscription}`);
 	}
 	return queryParams.join('&');
 }
