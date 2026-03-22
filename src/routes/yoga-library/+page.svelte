@@ -94,23 +94,23 @@
 </article>
 
 {#if filtersExpanded}
-	<form class="flex flex-wrap mt-2 -mx-4 gap-y-4" on:submit={filterSubmit}>
-		<div class="flex flex-col flex-grow min-w-0 w-full px-4">
+	<form class="flex flex-wrap items-baseline-last mt-2 -mx-4 gap-y-4" on:submit={filterSubmit}>
+		<div class="flex flex-col flex-grow min-w-0 px-4 md:pr-2 w-full md:w-1/2">
 			<label for="text" class="text-sm font-medium">Search for text</label>
 			<input type="text" id="text" bind:value={text} class="mt-1" />
 		</div>
 
-		<div class="flex flex-col w-1/2 pl-4 pr-2">
+		<div class="flex flex-col pl-4 pr-2 md:pl-2 w-1/2 md:w-1/4">
 			<label for="minDuration" class="text-sm font-medium">Min duration (mins)</label>
 			<input type="number" id="minDuration" bind:value={minDuration} class="mt-1" />
 		</div>
 
-		<div class="flex flex-col w-1/2 pl-2 pr-4">
+		<div class="flex flex-col pl-2 pr-4 w-1/2 md:w-1/4">
 			<label for="maxDuration" class="text-sm font-medium">Max duration (mins)</label>
 			<input type="number" id="maxDuration" bind:value={maxDuration} class="mt-1" />
 		</div>
 
-		<div class="flex flex-col w-full px-4">
+		<div class="flex flex-col px-4 w-full md:w-1/3 lg:w-auto">
 			<label for="energy" class="text-sm font-medium">Energy</label>
 			<select id="energy" bind:value={energy} class="mt-1">
 				<option value="">-</option>
@@ -120,12 +120,12 @@
 			</select>
 		</div>
 
-		<div class="flex items-center gap-2 px-4">
+		<div class="flex items-center gap-2 px-4 md:w-full lg:w-auto">
 			<input id="excluded" type="checkbox" bind:checked={showExcluded} />
 			<label for="excluded" class="text-sm font-medium">Show excluded videos?</label>
 		</div>
 
-		<div class="flex items-center gap-4 px-4">
+		<div class="flex items-center gap-4 px-4 lg:w-auto">
 			<div class="flex items-center gap-2">
 				<input type="radio" id="complete" name="complete-group" value={true} />
 				<label for="complete" class="text-sm font-medium">Complete only</label>
@@ -140,7 +140,7 @@
 			</div>
 		</div>
 
-		<button type="submit" class="btn btn-secondary mx-4">Apply filters</button>
+		<button type="submit" class="btn btn-secondary mx-4 md:ml-auto">Apply filters</button>
 	</form>
 {/if}
 
