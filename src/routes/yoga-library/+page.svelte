@@ -94,7 +94,7 @@
 </article>
 
 {#if filtersExpanded}
-	<form class="flex flex-wrap items-baseline-last mt-2 -mx-4 gap-y-4" on:submit={filterSubmit}>
+	<form class="flex flex-wrap items-center mt-2 -mx-4 gap-y-4" on:submit={filterSubmit}>
 		<div class="flex flex-col flex-grow min-w-0 px-4 md:pr-2 w-full md:w-1/2">
 			<label for="text" class="text-sm font-medium">Search for text</label>
 			<input type="text" id="text" bind:value={text} class="mt-1" />
@@ -127,15 +127,15 @@
 
 		<div class="flex items-center gap-4 px-4 lg:w-auto">
 			<div class="flex items-center gap-2">
-				<input type="radio" id="complete" name="complete-group" value={true} />
+				<input type="radio" id="complete" name="complete-group" bind:group={complete} value={true} />
 				<label for="complete" class="text-sm font-medium">Complete only</label>
 			</div>
 			<div class="flex items-center gap-2">
-				<input type="radio" id="incomplete" name="complete-group" value={false} />
+				<input type="radio" id="incomplete" name="complete-group" bind:group={complete} value={false} />
 				<label for="incomplete" class="text-sm font-medium">Incomplete only</label>
 			</div>
 			<div class="flex items-center gap-2">
-				<input type="radio" id="both" name="complete-group" value={null} />
+				<input type="radio" id="both" name="complete-group" bind:group={complete} value={null} />
 				<label for="both" class="text-sm font-medium">All</label>
 			</div>
 		</div>
