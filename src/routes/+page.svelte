@@ -22,11 +22,14 @@
 	});
 
 	let videoData;
+	let queryString;
+	$: seeAllLink = `/yoga-library?${queryString}`;
 	let error = 'Something went wrong.';
 
 	async function findMeYoga(e) {
 		indexPageStateStore.update(PAGE_STATES.loading);
-		const url = `/.netlify/functions/videos?${e.detail.queryString}&random=true&subscriptions=${subscriptionsQueryParam}&excluded=true`;
+		queryString = e.detail.queryString + `&subscriptions=${subscriptionsQueryParam}&excluded=true`;
+		const url = `/.netlify/functions/videos?${queryString}&random=true`;
 		const response = await fetch(url);
 		if (response.ok && response.status === 200) {
 			videoData = (await response.json()).videos;
@@ -58,7 +61,7 @@
 	</div>
 {:else if activeState === PAGE_STATES.video}
 	<div in:fade={{ delay: 601 }} out:fade>
-		<VideoResult {videoData} on:back-to-start={backToStart} />
+		<VideoResult {videoData} {seeAllLink} on:back-to-start={backToStart} />
 	</div>
 {:else if activeState === PAGE_STATES.error}
 	<article class="prose lg:prose-lg prose-zinc max-w-none prose-headings:mb-3">

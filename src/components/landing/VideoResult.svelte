@@ -9,6 +9,8 @@
 	}
 
 	export let videoData;
+	export let seeAllLink;
+
 	let extendedVideoData = {
 		video: { ...videoData.video, excluded: false },
 		others: videoData.others.map((video) => ({ ...video, excluded: false }))
@@ -108,4 +110,5 @@
 		</div>
 	{/if}
 	<button class="btn btn-secondary" on:click={backToStart} type="button">Back to start</button>
+	<a class="btn btn-primary" href={seeAllLink}>See all like this</a>
 </article>
