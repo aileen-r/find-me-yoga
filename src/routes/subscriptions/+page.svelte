@@ -52,9 +52,9 @@
 
 	<h3>In the library</h3>
 
-	<div class="flex gap-2">
+	<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
 		{#each data.subscriptions as subscription}
-			<div class="w-1/3">
+			<div>
 				<a
 					class="block focus-visible:outline-none focus-visible:ring focus-visible:ring-zinc-400 focus-visible:ring-offset-1 focus-visible:rounded-sm"
 					href={subscription.url}

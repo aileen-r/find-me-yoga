@@ -1,7 +1,7 @@
 <script>
-	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { page as pageStore } from '$app/stores';
+	import subscriptionsStore from '../../stores/subscriptions.js';
 	import { goto } from '$app/navigation';
 	import VideoThumbnail from '../../components/landing/VideoThumbnail.svelte';
 
@@ -18,12 +18,17 @@
 		url = value.url;
 	});
 
+	let subscriptionNames;
+	subscriptionsStore.subscribe((value) => {
+		subscriptionNames = value.map((sub) => sub.name).sort((a, b) => a.localeCompare(b));
+	});
+
 	$: maxPage = Math.ceil(totalCount / limit);
 
 	let filtersExpanded = false;
 
 	// Initialise form values
-	let text, minDuration, maxDuration, energy, showExcluded, complete;
+	let text, minDuration, maxDuration, energy, showExcluded, complete, instructor, subscription;
 	onMount(() => {
 		text = filterForm.text;
 		minDuration = filterForm.minDuration;
@@ -31,6 +36,8 @@
 		energy = filterForm.energy;
 		showExcluded = filterForm.showExcluded;
 		complete = filterForm.complete;
+		instructor = filterForm.instructor;
+		subscription = filterForm.subscription;
 	});
 
 	function toggleFiltersExpanded() {
@@ -58,8 +65,15 @@
 		if (showExcluded) {
 			queryParams.push(`showExcluded=${showExcluded}`);
 		}
-		if (complete !== null) {
+		if (complete !== null && complete !== undefined) {
 			queryParams.push(`complete=${complete}`);
+		}
+		if (instructor) {
+			queryParams.push(`instructor=${instructor}`);
+		}
+		if (subscription) {
+			// Not plural - this is frontend query
+			queryParams.push(`subscription=${subscription}`);
 		}
 		return queryParams.join('&');
 	}
@@ -110,7 +124,7 @@
 			<input type="number" id="maxDuration" bind:value={maxDuration} class="mt-1" />
 		</div>
 
-		<div class="flex flex-col px-4 w-full md:w-1/3 lg:w-auto">
+		<div class="flex flex-col px-4 md:pr-2 w-full md:w-1/3 lg:w-auto">
 			<label for="energy" class="text-sm font-medium">Energy</label>
 			<select id="energy" bind:value={energy} class="mt-1">
 				<option value="">-</option>
@@ -120,7 +134,22 @@
 			</select>
 		</div>
 
-		<div class="flex items-center gap-2 px-4 md:w-full lg:w-auto">
+		<div class="flex flex-col px-4 md:px-2 w-full md:w-1/3 lg:w-auto">
+			<label for="instructor" class="text-sm font-medium">Instructor</label>
+			<input type="text" id="instructor" bind:value={instructor} class="mt-1">
+		</div>
+
+		<div class="flex flex-col px-4 md:pl-2 lg:pr-2 w-full md:w-1/3 lg:w-auto">
+			<label for="subscription" class="text-sm font-medium">Subscription</label>
+			<select id="subscription" bind:value={subscription} class="mt-1">
+				<option value="">-</option>
+				{#each subscriptionNames as subscription}
+					<option value={subscription}>{subscription}</option>
+				{/each}
+			</select>
+		</div>
+
+		<div class="flex items-center gap-2 px-4 md:pl-2 md:w-full lg:w-auto">
 			<input id="excluded" type="checkbox" bind:checked={showExcluded} />
 			<label for="excluded" class="text-sm font-medium">Show excluded videos?</label>
 		</div>
@@ -144,7 +173,7 @@
 	</form>
 {/if}
 
-<ol class="list-none p-0 mt-12 grid gap-5 grid-cols-3">
+<ol class="list-none p-0 mt-12 grid gap-5 grid-cols-2 md:grid-cols-3">
 	{#each videos as video (video.id)}
 		<li class="card text-center">
 			<VideoThumbnail

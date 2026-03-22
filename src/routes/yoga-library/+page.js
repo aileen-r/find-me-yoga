@@ -81,14 +81,15 @@ function constructQuery(limit, offset, text, minDuration, maxDuration, energy, s
 	if (!showExcluded) {
 		queryParams.push(`excluded=true`)
 	}
-	if (complete !== undefined || complete !== null) {
+	if (complete !== undefined && complete !== null) {
 		queryParams.push(`complete=${complete}`);
 	}
 	if (instructor) {
 		queryParams.push(`instructor=${instructor}`);
 	}
 	if (subscription) {
-		queryParams.push(`subscription=${subscription}`);
+		// API supports array
+		queryParams.push(`subscriptions=${subscription}`);
 	}
 	return queryParams.join('&');
 }

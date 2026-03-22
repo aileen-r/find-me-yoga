@@ -66,9 +66,13 @@ function getWhereConditionFromQueryParameters(params) {
 	if (params.excluded) {
 		conditions.push('J = FALSE');
 	}
-	if (params.complete !== undefined || params.complete !== null) {
+	if (params.complete !== undefined && params.complete !== null) {
+		try {
 		const boolString = params.complete.toUpperCase();
 		conditions.push(`M = ${boolString}`);
+		} catch (e) {
+			console.warn(`'complete' param ${params.complete} is not a string. Falling back to showing both complete and incomplete.`);
+		}
 	}
 	return conditions.length ? 'Where ' + conditions.join(' And ') : '';
 }
