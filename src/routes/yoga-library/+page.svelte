@@ -23,14 +23,15 @@
 	let filtersExpanded = false;
 
 	// Initialise form values
-	let text, minDuration, maxDuration, energy, showExcluded;
+	let text, minDuration, maxDuration, energy, showExcluded, complete;
 	onMount(() => {
 		text = filterForm.text;
-    minDuration = filterForm.minDuration;
+		minDuration = filterForm.minDuration;
 		maxDuration = filterForm.maxDuration;
 		energy = filterForm.energy;
 		showExcluded = filterForm.showExcluded;
-  });
+		complete = filterForm.complete;
+	});
 
 	function toggleFiltersExpanded() {
 		filtersExpanded = !filtersExpanded;
@@ -56,6 +57,9 @@
 		}
 		if (showExcluded) {
 			queryParams.push(`showExcluded=${showExcluded}`);
+		}
+		if (complete !== null) {
+			queryParams.push(`complete=${complete}`);
 		}
 		return queryParams.join('&');
 	}
@@ -90,28 +94,53 @@
 </article>
 
 {#if filtersExpanded}
-	<form class="flex flex-col" on:submit={filterSubmit}>
-		<label for="text">Search for text</label>
-		<input type="text" id="text" bind:value={text} />
+	<form class="flex flex-wrap mt-2 -mx-4 gap-y-4" on:submit={filterSubmit}>
+		<div class="flex flex-col flex-grow min-w-0 w-full px-4">
+			<label for="text" class="text-sm font-medium">Search for text</label>
+			<input type="text" id="text" bind:value={text} class="mt-1" />
+		</div>
 
-		<label for="minDuration">Minimum duration (minutes)</label>
-		<input type="number" id="minDuration" bind:value={minDuration} />
+		<div class="flex flex-col w-1/2 pl-4 pr-2">
+			<label for="minDuration" class="text-sm font-medium">Min duration (mins)</label>
+			<input type="number" id="minDuration" bind:value={minDuration} class="mt-1" />
+		</div>
 
-		<label for="maxDuration">Maximum duration (minutes)</label>
-		<input type="number" id="maxDuration" bind:value={maxDuration} />
+		<div class="flex flex-col w-1/2 pl-2 pr-4">
+			<label for="maxDuration" class="text-sm font-medium">Max duration (mins)</label>
+			<input type="number" id="maxDuration" bind:value={maxDuration} class="mt-1" />
+		</div>
 
-		<label for="energy">Energy</label>
-		<select id="energy" bind:value={energy}>
-			<option value="">-</option>
-			<option value="low">Low</option>
-			<option value="medium">Medium</option>
-			<option value="high">High</option>
-		</select>
+		<div class="flex flex-col w-full px-4">
+			<label for="energy" class="text-sm font-medium">Energy</label>
+			<select id="energy" bind:value={energy} class="mt-1">
+				<option value="">-</option>
+				<option value="low">Low</option>
+				<option value="medium">Medium</option>
+				<option value="high">High</option>
+			</select>
+		</div>
 
-		<label for="excluded">Show excluded videos?</label>
-		<input id="excluded" type="checkbox" bind:checked={showExcluded} />
+		<div class="flex items-center gap-2 px-4">
+			<input id="excluded" type="checkbox" bind:checked={showExcluded} />
+			<label for="excluded" class="text-sm font-medium">Show excluded videos?</label>
+		</div>
 
-		<button type="submit" class="btn btn-secondary px-4">Apply filters</button>
+		<div class="flex items-center gap-4 px-4">
+			<div class="flex items-center gap-2">
+				<input type="radio" id="complete" name="complete-group" value={true} />
+				<label for="complete" class="text-sm font-medium">Complete only</label>
+			</div>
+			<div class="flex items-center gap-2">
+				<input type="radio" id="incomplete" name="complete-group" value={false} />
+				<label for="incomplete" class="text-sm font-medium">Incomplete only</label>
+			</div>
+			<div class="flex items-center gap-2">
+				<input type="radio" id="both" name="complete-group" value={null} />
+				<label for="both" class="text-sm font-medium">All</label>
+			</div>
+		</div>
+
+		<button type="submit" class="btn btn-secondary mx-4">Apply filters</button>
 	</form>
 {/if}
 

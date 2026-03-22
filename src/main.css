@@ -23,7 +23,7 @@ body {
 
 @layer components {
   .btn {
-    @apply mt-5 px-8 pt-1.5 pb-2 text-base rounded-xl cursor-pointer focus-visible:outline-none focus-visible:ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-default
+    @apply px-8 pt-1.5 pb-2 text-base rounded-xl cursor-pointer focus-visible:outline-none focus-visible:ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-default
   }
 
   .btn-primary {
