@@ -48,7 +48,7 @@
 <article class="text-center">
 	{#if video.id}
 	<div class="card" class:opacity-40={video.excluded} class:grayscale={video.excluded}>
-		<h2 class="underline-hover-inverted w-max text-2xl font-bold mx-auto mb-3 pb-2">
+		<h2 class="underline-hover-inverted inline max-w-full text-2xl font-bold mx-auto ">
 			{#if video.excluded}
 				<span>{video.title}</span>
 			{:else}
@@ -61,6 +61,7 @@
 			{/if}
 		</h2>
 		<VideoThumbnail
+		  class="mt-3"
 			id={video.id}
 			thumbnail={video.thumbnail}
 			title={video.title}
@@ -109,6 +110,6 @@
 			{/each}
 		</div>
 	{/if}
-	<button class="btn btn-secondary" on:click={backToStart} type="button">Back to start</button>
-	<a class="btn btn-primary" href={seeAllLink}>See all like this</a>
+	<button class="btn btn-secondary mt-3" on:click={backToStart} type="button">Back to start</button>
+	<a class="btn btn-primary mt-3" href={seeAllLink}>See all like this</a>
 </article>

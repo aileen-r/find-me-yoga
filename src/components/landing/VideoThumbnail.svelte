@@ -76,7 +76,7 @@
 	}
 </script>
 
-<figure class="relative">
+<figure class={'relative ' + $$restProps.class}>
 	<Image
 		className="w-full"
 		src={thumbnail}

@@ -78,7 +78,7 @@
 		>
 			<h2>{durationQuestion.question}</h2>
 			<DurationSlider on:option-selected={handleOptionSelected}/>
-			<button class="btn btn-primary" on:click={() => nextQuestion()} disabled={ctaDisabled}
+			<button class="btn btn-primary mt-3" on:click={() => nextQuestion()} disabled={ctaDisabled}
 				>Next</button
 			>
 		</div>
@@ -112,7 +112,7 @@
 	{#if activeQuestion > 1}
 		<!-- TODO: sort fly firections -->
 		<div
-			class="mt-40"
+			class="mt-24 md:mt-40"
 			in:fly|local={{ delay: 600, duration: 600, y: 30 }}
 			out:fly|local={{ duration: 600, y: buttonsOutYCoord }}
 		>

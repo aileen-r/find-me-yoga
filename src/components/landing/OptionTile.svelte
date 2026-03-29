@@ -14,17 +14,17 @@
 </script>
 
 <div
-	class="border-[6px] border-zinc-300 rounded-xl w-36 h-36 relative cursor-pointer hover:bg-zinc-300"
+	class="border-[6px] border-zinc-300 rounded-xl w-24 h-24 md:w-36 md:h-36 relative cursor-pointer hover:bg-zinc-300"
 	class:checked
 >
 	{#if image}
 		<img
-			class="mt-2 mx-auto mb-0 relative w-20 h-20"
+			class="mt-2 mx-auto mb-0 relative w-12 h-12"
 			alt={image.alt}
 			src={image.url}
 		/>
 	{/if}
-	<span class="absolute w-full left-0 bottom-3">{text}</span>
+	<span class="absolute w-full left-0 bottom-1 md:bottom-3">{text}</span>
 </div>
 
 <style>

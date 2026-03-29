@@ -26,3 +26,13 @@
 	max={120}
 	on:change={onDurationChange}
 />
+
+<style lang="scss">
+	:global(.rangeSlider) {
+    font-size: 0.75rem;
+
+		@media (min-width: 48rem) {
+			font-size: 1rem;
+		}
+  }
+</style>
