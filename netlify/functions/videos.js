@@ -6,6 +6,7 @@ import getQueriedList from './videos/getQueriedList';
 import { excludeVideo } from './videos/updateEntity';
 import { selectUniqueRandomVideos } from './videos/selectRandomVideo';
 import { getUploadsByPlaylistId, addImportedVideosToSheet } from './videos/youtubeImport';
+import scrapeAlo from './videos/scrapeAlo';
 import scrapeCommune from './videos/scrapeCommune';
 
 // required env vars
@@ -42,6 +43,42 @@ async function getRecentlyAdded(spreadsheetId, auth, count = 3) {
 		{random: true}
 	);
 	return videos.slice(-count);
+}
+
+async function triggerYoutubePlaylistScrape(event, auth) {
+	const playlistId = event.queryStringParameters.playlistId;
+	const instructor = event.queryStringParameters.instructor || '';
+
+	if (!playlistId) {
+		throw 'No playlistId parameter provided.';
+	}
+
+	// All this is horrendous, but I want to get it working
+
+	let videoCount;
+	let nextPageToken;
+
+	const res = await getUploadsByPlaylistId(playlistId, youtube, auth, instructor);
+
+	videoCount = res.videos.length;
+	nextPageToken = res.nextPageToken;
+	const totalResults = res.totalResults;
+
+	const response = await addImportedVideosToSheet(
+		sheets,
+		spreadsheetId,
+		auth,
+		res.videos
+	);
+
+	while (videoCount < totalResults) {
+		const r = await getUploadsByPlaylistId(playlistId, youtube, auth, nextPageToken);
+		videoCount = videoCount + r.videos.length;
+		nextPageToken = r.nextPageToken;
+		await addImportedVideosToSheet(sheets, spreadsheetId, auth, r.videos);
+	}
+
+	return JSON.stringify(response);
 }
  
 /*
@@ -93,42 +130,12 @@ export const handler = async (event) => {
 				if (segments.length === 1) {
 					// TODO: move this to POST eventually.
 					if (segments[0] === 'trigger') {
-						const playlistId = event.queryStringParameters.playlistId;
-						const instructor = event.queryStringParameters.instructor || '';
-
-						if (!playlistId) {
-							throw 'No playlistId parameter provided.';
-						}
-
-						// All this is horrendous, but I want to get it working
-
-						let videoCount;
-						let nextPageToken;
-
-						const res = await getUploadsByPlaylistId(playlistId, youtube, auth, instructor);
-
-						videoCount = res.videos.length;
-						nextPageToken = res.nextPageToken;
-						const totalResults = res.totalResults;
-
-						const response = await addImportedVideosToSheet(
-							sheets,
-							spreadsheetId,
-							auth,
-							res.videos
-						);
-
-						while (videoCount < totalResults) {
-							const r = await getUploadsByPlaylistId(playlistId, youtube, auth, nextPageToken);
-							videoCount = videoCount + r.videos.length;
-							nextPageToken = r.nextPageToken;
-							await addImportedVideosToSheet(sheets, spreadsheetId, auth, r.videos);
-						}
+						const response = await triggerYoutubePlaylistScrape(event, auth);
 
 						return {
 							statusCode: 200,
-							body: JSON.stringify(response)
-							// 	// body: JSON.stringify(rows[rowId]) // just sends less data over the wire
+							body: response
+							// body: JSON.stringify(rows[rowId]) // just sends less data over the wire
 						};
 					}
 					/* GET /.netlify/functions/videos/{id} */
@@ -149,6 +156,15 @@ export const handler = async (event) => {
 						statusCode: 200,
 						body: JSON.stringify(response)
 					};
+				}
+				if (segments[0] === 'scrapeAlo') {
+					const url = event.queryStringParameters.url;
+					const videos = await scrapeAlo(url);
+					const response = await addImportedVideosToSheet(sheets, spreadsheetId, auth, videos);
+					return {
+						statusCode: 200,
+						body: JSON.stringify(response)
+					}
 				}
 				throw new Error('Unspecified POST request');
 			//   /* parse the string body into a useable JS object */

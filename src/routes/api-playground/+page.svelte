@@ -1,5 +1,6 @@
 <script>
 	import CommuneScraper from '../../components/api-playground/CommuneScraper.svelte';
+	import AloScraper from '../../components/api-playground/AloScraper.svelte';
 import Alert from '../../components/global/Alert.svelte';
 
 	const feedbackTypes = Object.freeze({
@@ -21,14 +22,17 @@ import Alert from '../../components/global/Alert.svelte';
 		e.preventDefault();
 		loading = true;
 
-		const url = `/.netlify/functions/videos/trigger?playlistId=${playlistId}`;
+		let url = `/.netlify/functions/videos/trigger?playlistId=${playlistId}`;
+		if (instructor) {
+			url += `&instructor=${instructor}`;
+		}
 		try {
 			const response = await fetch(url);
 			if (response.ok && response.status === 200) {
 				feedbackType = feedbackTypes.success;
 				feedbackMsg = `Videos from playlist ID ${playlistId} successfully added to DB`;
 				if (instructor) {
-					feedbackMsg += `with "Instructor" set to ${instructor}`;
+					feedbackMsg += ` with "Instructor" set to ${instructor}`;
 				}
 			} else {
 				const errorText = await response.text();
@@ -191,7 +195,7 @@ import Alert from '../../components/global/Alert.svelte';
 		<label for="instructor">Instructor's name (optional)</label>
 		<input id="instructor" type="text" bind:value={instructor} />
 
-		<button type="submit" class="btn btn-primary" disabled={loading}>{loading ? 'Loading...' : 'Scrape'}</button
+		<button type="submit" class="btn btn-primary mt-3" disabled={loading}>{loading ? 'Loading...' : 'Scrape'}</button
 		>
 	</form>
 
@@ -223,4 +227,5 @@ import Alert from '../../components/global/Alert.svelte';
 	</form>
 
 	<CommuneScraper />
+	<AloScraper />
 </article>
